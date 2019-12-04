@@ -145,7 +145,7 @@ bool InitGUI()
   gslc_SetPageCur(&m_gui,E_PG_MAIN);
   
   // Set Background to a flat color
-  gslc_SetBkgndColor(&m_gui,GSLC_COL_WHITE);
+  gslc_SetBkgndColor(&m_gui,GSLC_COL_BLACK);
 
   // -----------------------------------
   // PAGE: E_PG_MAIN
@@ -158,18 +158,14 @@ bool InitGUI()
   // Create E_ELEM_TEXT1 text label
   pElemRef = gslc_ElemCreateTxt(&m_gui,E_ELEM_TEXT1,E_PG_MAIN,(gslc_tsRect){135,115,24,10},
     (char*)"Temp",0,E_FONT_TXT5);
-  gslc_ElemSetTxtCol(&m_gui,pElemRef,GSLC_COL_BLACK);
-  gslc_ElemSetCol(&m_gui,pElemRef,GSLC_COL_BLACK,GSLC_COL_WHITE,GSLC_COL_BLACK);
   
   // create E_ELEM_BTN3 button with text label
   pElemRef = gslc_ElemCreateBtnTxt(&m_gui,E_ELEM_BTN3,E_PG_MAIN,
     (gslc_tsRect){128,137,40,20},(char*)"Down",0,E_FONT_TXT5,&CbBtnCommon);
   
   // Create E_ELEM_TEXT2 text label
-  pElemRef = gslc_ElemCreateTxt(&m_gui,E_ELEM_TEXT2,E_PG_MAIN,(gslc_tsRect){220,110,48,10},
+  pElemRef = gslc_ElemCreateTxt(&m_gui,E_ELEM_TEXT2,E_PG_MAIN,(gslc_tsRect){241,118,48,10},
     (char*)"Set temp",0,E_FONT_TXT5);
-  gslc_ElemSetTxtCol(&m_gui,pElemRef,GSLC_COL_BLACK);
-  gslc_ElemSetCol(&m_gui,pElemRef,GSLC_COL_GRAY_DK3,GSLC_COL_WHITE,GSLC_COL_BLACK);
 //<InitGUI !End!>
 
   return true;
