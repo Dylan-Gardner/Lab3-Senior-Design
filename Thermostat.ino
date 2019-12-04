@@ -229,7 +229,7 @@ void setup()
   InitGUI();
 
 //<Startup !Start!>
-  gslc_GuiRotate(&m_gui, 0);
+  gslc_GuiRotate(&m_gui, 1);
 //<Startup !End!>
 
 }
