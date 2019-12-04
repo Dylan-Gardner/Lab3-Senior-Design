@@ -153,7 +153,7 @@ bool InitGUI()
   
   // create E_ELEM_BTN2 button with text label
   pElemRef = gslc_ElemCreateBtnTxt(&m_gui,E_ELEM_BTN2,E_PG_MAIN,
-    (gslc_tsRect){110,50,80,40},(char*)"Up",0,E_FONT_TXT5,&CbBtnCommon);
+    (gslc_tsRect){128,79,40,20},(char*)"Up",0,E_FONT_TXT5,&CbBtnCommon);
   
   // Create E_ELEM_TEXT1 text label
   pElemRef = gslc_ElemCreateTxt(&m_gui,E_ELEM_TEXT1,E_PG_MAIN,(gslc_tsRect){135,115,24,10},
@@ -163,9 +163,7 @@ bool InitGUI()
   
   // create E_ELEM_BTN3 button with text label
   pElemRef = gslc_ElemCreateBtnTxt(&m_gui,E_ELEM_BTN3,E_PG_MAIN,
-    (gslc_tsRect){110,140,80,40},(char*)"Down",0,E_FONT_TXT5,&CbBtnCommon);
-  gslc_ElemSetTxtCol(&m_gui,pElemRef,GSLC_COL_WHITE);
-  gslc_ElemSetCol(&m_gui,pElemRef,GSLC_COL_BLUE_DK2,GSLC_COL_BLUE_DK4,GSLC_COL_CYAN);
+    (gslc_tsRect){128,137,40,20},(char*)"Down",0,E_FONT_TXT5,&CbBtnCommon);
   
   // Create E_ELEM_TEXT2 text label
   pElemRef = gslc_ElemCreateTxt(&m_gui,E_ELEM_TEXT2,E_PG_MAIN,(gslc_tsRect){220,110,48,10},
