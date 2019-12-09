@@ -48,7 +48,7 @@ enum {AC_BTN,AUTO_BTN,CUR_TEMP_TEXT,DATE_TEXT,DOWN_BTN,E_DRAW_LINE1
       ,E_ELEM_BTN32,E_ELEM_BTN33,E_ELEM_TEXT10,E_ELEM_TEXT11
       ,E_ELEM_TEXT12,E_ELEM_TEXT13,E_ELEM_TEXT14,E_ELEM_TEXT7
       ,E_ELEM_TEXT8,E_ELEM_TEXT9,HEAT_BTN,HOLD_BTN,HOME_BUTTON_1
-      ,HOME_BUTTON_2,OFF_BTN,PRGM_BTN,SETTINGS_BTN,SET_TEMP_TEXT
+      ,HOME_BUTTON_2,OFF_BTN,PRGM_BTN,SETTINGS_BTN,SET_TEMP_TEXT,UP_BNT
       ,WKND_1_BTN,WKND_2_BTN,WKND_3_BTN,WKND_4_BTN,WK_1_BTN,WK_2_BTN
       ,WK_3_BTN,WK_4_BTN};
 // Must use separate enum for fonts with MAX_FONT at end to use gslc_FontSet.
@@ -65,7 +65,7 @@ enum {E_FONT_TXT5,MAX_FONT};
 //<ElementDefines !Start!>
 #define MAX_PAGE                3
 
-#define MAX_ELEM_PG_MAIN 11 // # Elems total on page
+#define MAX_ELEM_PG_MAIN 12 // # Elems total on page
 #define MAX_ELEM_PG_MAIN_RAM MAX_ELEM_PG_MAIN // # Elems in RAM
 
 #define MAX_ELEM_PG2 12 // # Elems total on page
@@ -213,6 +213,9 @@ bool CbBtnCommon(void* pvGui,void *pvElemRef,gslc_teTouch eTouch,int16_t nX,int1
       case E_ELEM_BTN33:
         //TODO- Replace with button handling code
         break;
+      case UP_BNT:
+        //TODO- Replace with button handling code
+        break;
 //<Button Enums !End!>
       default:
         break;
@@ -307,6 +310,10 @@ bool InitGUI()
   // create OFF_BTN button with text label
   pElemRef = gslc_ElemCreateBtnTxt(&m_gui,OFF_BTN,E_PG_MAIN,
     (gslc_tsRect){190,190,40,40},(char*)"Off",0,E_FONT_TXT5,&CbBtnCommon);
+  
+  // create UP_BNT button with text label
+  pElemRef = gslc_ElemCreateBtnTxt(&m_gui,UP_BNT,E_PG_MAIN,
+    (gslc_tsRect){120,50,80,40},(char*)"Up",0,E_FONT_TXT5,&CbBtnCommon);
 
   // -----------------------------------
   // PAGE: E_PG2
