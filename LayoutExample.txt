@@ -1,0 +1,44 @@
+Page 1 - Home Screen
+  Buttons:
+    Settings - Bring user to page 2
+    Program - Bring user to page 3
+    Up - Increase temperature by 1
+    Down - Decrease temperature by 1
+    Hold - Overrides any previously set temperature
+    
+    Heat - Turn on Heating(red LED)
+    AC - Turn on AC(blue LED)
+    Auto - Turn on both?
+    Off - Turn off heating and AC
+  Graphics:
+    Heat icon - Visible if heat is on
+    AC icon - Visible if ac is on
+    Current temperature - Displays current temp
+    
+Page 2 - Date and Time
+  Buttons:
+    Up and down arrows - Increase or decrease certain time
+      Month - 1 to 12
+      Day - 1 to 31
+      Year - 2000 to 3000
+    Home - Takes user to page 1
+  Graphics:
+    Date
+    Time
+
+Page 3 - Weekly Programming
+  Buttons:
+    Each day has its own clickable program - brings user to page 4
+    Home button - Takes user to page 1
+  Graphics:
+    Enable/disable buttons
+    show temp next to buttons if enabled?
+    
+Page 4 - Change Programming
+  Buttons: 
+    Up and Down arrow - Increase/decrease temperature by 1
+    Enable/Disable - Turn on/off the program
+    Save - Save changes to program
+    
+    Back - Takes user back to page 3
+    Home - Takes user back to page 1
