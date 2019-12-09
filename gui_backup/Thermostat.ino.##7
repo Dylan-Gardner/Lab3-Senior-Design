@@ -35,19 +35,15 @@
 // Defines for resources
 // ------------------------------------------------
 //<Resources !Start!>
-extern "C" const unsigned short exit_g24[] PROGMEM;
 //<Resources !End!>
 
 // ------------------------------------------------
 // Enumerations for pages, elements, fonts, images
 // ------------------------------------------------
 //<Enum !Start!>
-enum {E_PG_MAIN,E_PG2,E_PG3};
-enum {AC_BTN,AUTO_BTN,CUR_TEMP_TEXT,DATE_TEXT,DOWN_BTN,E_DRAW_LINE1
-      ,E_ELEM_IMAGE2,E_ELEM_TEXT7,E_ELEM_TEXT8,HEAT_BTN,HOLD_BTN
-      ,HOME_BUTTON_1,OFF_BTN,PRGM_BTN,SETTINGS_BTN,SET_TEMP_TEXT,UP_BTN
-      ,WKND_1_BTN,WKND_2_BTN,WKND_3_BTN,WKND_4_BTN,WK_1_BTN,WK_2_BTN
-      ,WK_3_BTN,WK_4_BTN};
+enum {E_PG_MAIN,E_PG2};
+enum {E_ELEM_BTN2,E_ELEM_BTN4,E_ELEM_BTN5,E_ELEM_BTN6,E_ELEM_BTN7
+      ,E_ELEM_TEXT1,E_ELEM_TEXT2,E_ELEM_TEXT5,Test};
 // Must use separate enum for fonts with MAX_FONT at end to use gslc_FontSet.
 enum {E_FONT_TXT5,MAX_FONT};
 //<Enum !End!>
@@ -60,16 +56,13 @@ enum {E_FONT_TXT5,MAX_FONT};
 // Define the maximum number of elements and pages
 // ------------------------------------------------
 //<ElementDefines !Start!>
-#define MAX_PAGE                3
+#define MAX_PAGE                2
 
-#define MAX_ELEM_PG_MAIN 13 // # Elems total on page
+#define MAX_ELEM_PG_MAIN 7 // # Elems total on page
 #define MAX_ELEM_PG_MAIN_RAM MAX_ELEM_PG_MAIN // # Elems in RAM
 
-#define MAX_ELEM_PG2 12 // # Elems total on page
+#define MAX_ELEM_PG2 2 // # Elems total on page
 #define MAX_ELEM_PG2_RAM MAX_ELEM_PG2 // # Elems in RAM
-
-#define MAX_ELEM_PG3 0 // # Elems total on page
-#define MAX_ELEM_PG3_RAM MAX_ELEM_PG3 // # Elems in RAM
 //<ElementDefines !End!>
 
 // ------------------------------------------------
@@ -85,8 +78,6 @@ gslc_tsElem                     m_asPage1Elem[MAX_ELEM_PG_MAIN_RAM];
 gslc_tsElemRef                  m_asPage1ElemRef[MAX_ELEM_PG_MAIN];
 gslc_tsElem                     m_asPage2Elem[MAX_ELEM_PG2_RAM];
 gslc_tsElemRef                  m_asPage2ElemRef[MAX_ELEM_PG2];
-gslc_tsElem                     m_asPage3Elem[MAX_ELEM_PG3_RAM];
-gslc_tsElemRef                  m_asPage3ElemRef[MAX_ELEM_PG3];
 
 #define MAX_STR                 100
 
@@ -116,62 +107,23 @@ bool CbBtnCommon(void* pvGui,void *pvElemRef,gslc_teTouch eTouch,int16_t nX,int1
     // From the element's ID we can determine which button was pressed.
     switch (pElem->nId) {
 //<Button Enums !Start!>
+      case E_ELEM_BTN2:
+        //TODO- Replace with button handling code
+        break;
 
-      case UP_BTN:
+      case E_ELEM_BTN4:
         //TODO- Replace with button handling code
         break;
-      case DOWN_BTN:
-        //TODO- Replace with button handling code
-        break;
-      case PRGM_BTN:
+      case E_ELEM_BTN5:
         //TODO- Check the code to see what else you may need to add
         gslc_SetPageCur(&m_gui,E_PG2);
         break;
-      case SETTINGS_BTN:
+      case E_ELEM_BTN6:
         //TODO- Replace with button handling code
         break;
-      case HOLD_BTN:
-        //TODO- Replace with button handling code
-        break;
-      case HEAT_BTN:
-        //TODO- Replace with button handling code
-        break;
-      case AC_BTN:
-        //TODO- Replace with button handling code
-        break;
-      case AUTO_BTN:
-        //TODO- Replace with button handling code
-        break;
-      case OFF_BTN:
-        //TODO- Replace with button handling code
-        break;
-      case HOME_BUTTON_1:
+      case E_ELEM_BTN7:
         //TODO- Check the code to see what else you may need to add
         gslc_SetPageCur(&m_gui,E_PG_MAIN);
-        break;
-      case WK_1_BTN:
-        //TODO- Replace with button handling code
-        break;
-      case WK_2_BTN:
-        //TODO- Replace with button handling code
-        break;
-      case WK_3_BTN:
-        //TODO- Replace with button handling code
-        break;
-      case WK_4_BTN:
-        //TODO- Replace with button handling code
-        break;
-      case WKND_1_BTN:
-        //TODO- Replace with button handling code
-        break;
-      case WKND_2_BTN:
-        //TODO- Replace with button handling code
-        break;
-      case WKND_3_BTN:
-        //TODO- Replace with button handling code
-        break;
-      case WKND_4_BTN:
-        //TODO- Replace with button handling code
         break;
 //<Button Enums !End!>
       default:
@@ -205,7 +157,6 @@ bool InitGUI()
 //<InitGUI !Start!>
   gslc_PageAdd(&m_gui,E_PG_MAIN,m_asPage1Elem,MAX_ELEM_PG_MAIN_RAM,m_asPage1ElemRef,MAX_ELEM_PG_MAIN);
   gslc_PageAdd(&m_gui,E_PG2,m_asPage2Elem,MAX_ELEM_PG2_RAM,m_asPage2ElemRef,MAX_ELEM_PG2);
-  gslc_PageAdd(&m_gui,E_PG3,m_asPage3Elem,MAX_ELEM_PG3_RAM,m_asPage3ElemRef,MAX_ELEM_PG3);
 
   // NOTE: The current page defaults to the first page added. Here we explicitly
   //       ensure that the main page is the correct page no matter the add order.
@@ -218,124 +169,49 @@ bool InitGUI()
   // PAGE: E_PG_MAIN
   
   
-  // create UP_BTN button with text label
-  pElemRef = gslc_ElemCreateBtnTxt(&m_gui,UP_BTN,E_PG_MAIN,
+  // create E_ELEM_BTN2 button with text label
+  pElemRef = gslc_ElemCreateBtnTxt(&m_gui,E_ELEM_BTN2,E_PG_MAIN,
     (gslc_tsRect){120,50,80,40},(char*)"Up",0,E_FONT_TXT5,&CbBtnCommon);
   
-  // Create SET_TEMP_TEXT text label
-  pElemRef = gslc_ElemCreateTxt(&m_gui,SET_TEMP_TEXT,E_PG_MAIN,(gslc_tsRect){148,110,24,10},
+  // Create E_ELEM_TEXT1 text label
+  pElemRef = gslc_ElemCreateTxt(&m_gui,E_ELEM_TEXT1,E_PG_MAIN,(gslc_tsRect){148,110,24,10},
     (char*)"Temp",0,E_FONT_TXT5);
   gslc_ElemSetTxtCol(&m_gui,pElemRef,GSLC_COL_BLACK);
   gslc_ElemSetCol(&m_gui,pElemRef,GSLC_COL_BLACK,GSLC_COL_WHITE,GSLC_COL_BLACK);
   
-  // Create CUR_TEMP_TEXT text label
-  pElemRef = gslc_ElemCreateTxt(&m_gui,CUR_TEMP_TEXT,E_PG_MAIN,(gslc_tsRect){20,110,72,10},
-    (char*)"Current Temp",0,E_FONT_TXT5);
+  // Create E_ELEM_TEXT2 text label
+  pElemRef = gslc_ElemCreateTxt(&m_gui,E_ELEM_TEXT2,E_PG_MAIN,(gslc_tsRect){20,110,48,10},
+    (char*)"Set temp",0,E_FONT_TXT5);
   gslc_ElemSetTxtCol(&m_gui,pElemRef,GSLC_COL_BLACK);
   gslc_ElemSetCol(&m_gui,pElemRef,GSLC_COL_GRAY_DK3,GSLC_COL_WHITE,GSLC_COL_BLACK);
   
-  // Create DATE_TEXT text label
-  pElemRef = gslc_ElemCreateTxt(&m_gui,DATE_TEXT,E_PG_MAIN,(gslc_tsRect){10,10,24,10},
+  // Create Test text label
+  pElemRef = gslc_ElemCreateTxt(&m_gui,Test,E_PG_MAIN,(gslc_tsRect){10,10,24,10},
     (char*)"Date",0,E_FONT_TXT5);
-  gslc_ElemSetTxtCol(&m_gui,pElemRef,GSLC_COL_BLACK);
-  gslc_ElemSetCol(&m_gui,pElemRef,GSLC_COL_GRAY,GSLC_COL_WHITE,GSLC_COL_BLACK);
   
-  // create DOWN_BTN button with text label
-  pElemRef = gslc_ElemCreateBtnTxt(&m_gui,DOWN_BTN,E_PG_MAIN,
+  // create E_ELEM_BTN4 button with text label
+  pElemRef = gslc_ElemCreateBtnTxt(&m_gui,E_ELEM_BTN4,E_PG_MAIN,
     (gslc_tsRect){120,140,80,40},(char*)"Down",0,E_FONT_TXT5,&CbBtnCommon);
   
-  // create PRGM_BTN button with text label
-  pElemRef = gslc_ElemCreateBtnTxt(&m_gui,PRGM_BTN,E_PG_MAIN,
-    (gslc_tsRect){260,10,50,30},(char*)"Program",0,E_FONT_TXT5,&CbBtnCommon);
+  // create E_ELEM_BTN5 button with text label
+  pElemRef = gslc_ElemCreateBtnTxt(&m_gui,E_ELEM_BTN5,E_PG_MAIN,
+    (gslc_tsRect){230,10,80,40},(char*)"Program",0,E_FONT_TXT5,&CbBtnCommon);
   
-  // create SETTINGS_BTN button with text label
-  pElemRef = gslc_ElemCreateBtnTxt(&m_gui,SETTINGS_BTN,E_PG_MAIN,
+  // create E_ELEM_BTN6 button with text label
+  pElemRef = gslc_ElemCreateBtnTxt(&m_gui,E_ELEM_BTN6,E_PG_MAIN,
     (gslc_tsRect){50,10,60,30},(char*)"Settings",0,E_FONT_TXT5,&CbBtnCommon);
-  
-  // create HOLD_BTN button with text label
-  pElemRef = gslc_ElemCreateBtnTxt(&m_gui,HOLD_BTN,E_PG_MAIN,
-    (gslc_tsRect){240,100,40,30},(char*)"Hold",0,E_FONT_TXT5,&CbBtnCommon);
-  
-  // create HEAT_BTN button with text label
-  pElemRef = gslc_ElemCreateBtnTxt(&m_gui,HEAT_BTN,E_PG_MAIN,
-    (gslc_tsRect){10,190,40,40},(char*)"Heat",0,E_FONT_TXT5,&CbBtnCommon);
-  
-  // create AC_BTN button with text label
-  pElemRef = gslc_ElemCreateBtnTxt(&m_gui,AC_BTN,E_PG_MAIN,
-    (gslc_tsRect){70,190,40,40},(char*)"AC",0,E_FONT_TXT5,&CbBtnCommon);
-  
-  // create AUTO_BTN button with text label
-  pElemRef = gslc_ElemCreateBtnTxt(&m_gui,AUTO_BTN,E_PG_MAIN,
-    (gslc_tsRect){130,190,40,40},(char*)"Auto",0,E_FONT_TXT5,&CbBtnCommon);
-  
-  // create OFF_BTN button with text label
-  pElemRef = gslc_ElemCreateBtnTxt(&m_gui,OFF_BTN,E_PG_MAIN,
-    (gslc_tsRect){190,190,40,40},(char*)"Off",0,E_FONT_TXT5,&CbBtnCommon);
- 
-  // Create E_ELEM_IMAGE2 using Image 
-  pElemRef = gslc_ElemCreateImg(&m_gui,E_ELEM_IMAGE2,E_PG_MAIN,(gslc_tsRect){260,190,32,32},
-    gslc_GetImageFromProg((const unsigned char*)exit_g24,GSLC_IMGREF_FMT_BMP24));
-  gslc_ElemSetFillEn(&m_gui,pElemRef,false);
 
   // -----------------------------------
   // PAGE: E_PG2
   
   
-  // create HOME_BUTTON_1 button with text label
-  pElemRef = gslc_ElemCreateBtnTxt(&m_gui,HOME_BUTTON_1,E_PG2,
-    (gslc_tsRect){150,200,30,30},(char*)"Home",0,E_FONT_TXT5,&CbBtnCommon);
+  // Create E_ELEM_TEXT5 text label
+  pElemRef = gslc_ElemCreateTxt(&m_gui,E_ELEM_TEXT5,E_PG2,(gslc_tsRect){130,100,54,10},
+    (char*)"Test Page",0,E_FONT_TXT5);
   
-  // Create E_ELEM_TEXT7 text label
-  pElemRef = gslc_ElemCreateTxt(&m_gui,E_ELEM_TEXT7,E_PG2,(gslc_tsRect){30,10,42,10},
-    (char*)"Weekday",0,E_FONT_TXT5);
-  gslc_ElemSetTxtCol(&m_gui,pElemRef,GSLC_COL_BLACK);
-  gslc_ElemSetCol(&m_gui,pElemRef,GSLC_COL_GRAY,GSLC_COL_WHITE,GSLC_COL_BLACK);
-  
-  // Create E_ELEM_TEXT8 text label
-  pElemRef = gslc_ElemCreateTxt(&m_gui,E_ELEM_TEXT8,E_PG2,(gslc_tsRect){230,10,42,10},
-    (char*)"Weekend",0,E_FONT_TXT5);
-  gslc_ElemSetTxtCol(&m_gui,pElemRef,GSLC_COL_BLACK);
-  gslc_ElemSetCol(&m_gui,pElemRef,GSLC_COL_GRAY,GSLC_COL_WHITE,GSLC_COL_BLACK);
-
-  // Create E_DRAW_LINE1 line 
-  pElemRef = gslc_ElemCreateLine(&m_gui,E_DRAW_LINE1,E_PG2,0,22,320,22);
-  gslc_ElemSetCol(&m_gui,pElemRef,GSLC_COL_BLACK,GSLC_COL_BLACK,GSLC_COL_BLACK);
-  
-  // create WK_1_BTN button with text label
-  pElemRef = gslc_ElemCreateBtnTxt(&m_gui,WK_1_BTN,E_PG2,
-    (gslc_tsRect){10,30,80,30},(char*)"Program 1",0,E_FONT_TXT5,&CbBtnCommon);
-  
-  // create WK_2_BTN button with text label
-  pElemRef = gslc_ElemCreateBtnTxt(&m_gui,WK_2_BTN,E_PG2,
-    (gslc_tsRect){10,70,80,30},(char*)"Program 2",0,E_FONT_TXT5,&CbBtnCommon);
-  
-  // create WK_3_BTN button with text label
-  pElemRef = gslc_ElemCreateBtnTxt(&m_gui,WK_3_BTN,E_PG2,
-    (gslc_tsRect){10,110,80,30},(char*)"Program 3",0,E_FONT_TXT5,&CbBtnCommon);
-  
-  // create WK_4_BTN button with text label
-  pElemRef = gslc_ElemCreateBtnTxt(&m_gui,WK_4_BTN,E_PG2,
-    (gslc_tsRect){10,150,80,30},(char*)"Program 4",0,E_FONT_TXT5,&CbBtnCommon);
-  
-  // create WKND_1_BTN button with text label
-  pElemRef = gslc_ElemCreateBtnTxt(&m_gui,WKND_1_BTN,E_PG2,
-    (gslc_tsRect){230,30,80,30},(char*)"Program 1",0,E_FONT_TXT5,&CbBtnCommon);
-  
-  // create WKND_2_BTN button with text label
-  pElemRef = gslc_ElemCreateBtnTxt(&m_gui,WKND_2_BTN,E_PG2,
-    (gslc_tsRect){230,70,80,30},(char*)"Program 2",0,E_FONT_TXT5,&CbBtnCommon);
-  
-  // create WKND_3_BTN button with text label
-  pElemRef = gslc_ElemCreateBtnTxt(&m_gui,WKND_3_BTN,E_PG2,
-    (gslc_tsRect){230,110,80,30},(char*)"Program 3",0,E_FONT_TXT5,&CbBtnCommon);
-  
-  // create WKND_4_BTN button with text label
-  pElemRef = gslc_ElemCreateBtnTxt(&m_gui,WKND_4_BTN,E_PG2,
-    (gslc_tsRect){230,150,80,30},(char*)"Program 4",0,E_FONT_TXT5,&CbBtnCommon);
-
-  // -----------------------------------
-  // PAGE: E_PG3
-  
+  // create E_ELEM_BTN7 button with text label
+  pElemRef = gslc_ElemCreateBtnTxt(&m_gui,E_ELEM_BTN7,E_PG2,
+    (gslc_tsRect){20,80,80,40},(char*)"Home",0,E_FONT_TXT5,&CbBtnCommon);
 //<InitGUI !End!>
 
   return true;
