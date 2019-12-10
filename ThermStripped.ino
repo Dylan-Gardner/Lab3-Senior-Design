@@ -86,6 +86,12 @@ gslc_tsElemRef                  m_asPage1ElemRef[MAX_ELEM_PG_MAIN];
 gslc_tsElemRef*  m_pElemOutTxt1    = NULL;
 //<Save_References !End!>
 
+int16_t changeTempTo = 60;
+char* acTxt = 'Test';
+bool increaseTempOnScreen = false;
+bool decreaseTempOnScreen = false;
+
+
 // Define debug message function
 static int16_t DebugOut(char ch) { if (ch == (char)'\n') Serial.println(""); else Serial.write(ch); return 0; }
 
@@ -103,10 +109,10 @@ bool CbBtnCommon(void* pvGui,void *pvElemRef,gslc_teTouch eTouch,int16_t nX,int1
     switch (pElem->nId) {
 //<Button Enums !Start!>
       case DOWN_BTN:
-        //TODO- Replace with button handling code
+        decreaseTempOnScreen = true;
         break;
       case UP_BNT:
-        //TODO- Replace with button handling code
+        increaseTempOnScreen = true;
         break;
 
 //<Button Enums !End!>
@@ -214,11 +220,40 @@ void loop()
   // ------------------------------------------------
   
   //TODO - Add update code for any text, gauges, or sliders
-  
+  if (increaseTempOnScreen == true)
+  {
+    Serial.println("IsTrue");
+    increaseTempOnPage1();
+  }
+
+  if (decreaseTempOnScreen == true)
+  {
+    Serial.println("IsTrue2");
+    decreaseTempOnPage1();
+  }
   // ------------------------------------------------
   // Periodically call GUIslice update function
   // ------------------------------------------------
   gslc_Update(&m_gui);
     
 }
+
+void decreaseTempOnPage1(){
+        changeTempTo--;
+        Serial.println(changeTempTo);
+        snprintf(acTxt, MAX_STR, "%d", changeTempTo);
+        gslc_ElemSetTxtStr(&m_gui,m_pElemOutTxt1,acTxt);
+        //gslc_Update(&m_gui);
+        decreaseTempOnScreen = false;
+}
+
+void increaseTempOnPage1(){
+        changeTempTo++;
+        Serial.println(changeTempTo);
+        snprintf(acTxt, MAX_STR, "%d", changeTempTo);
+        gslc_ElemSetTxtStr(&m_gui,m_pElemOutTxt1,acTxt);
+        //gslc_Update(&m_gui);
+        increaseTempOnScreen = false;
+}
+
 
