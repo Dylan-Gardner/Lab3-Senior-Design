@@ -42,8 +42,7 @@
 // ------------------------------------------------
 //<Enum !Start!>
 enum {E_PG_MAIN};
-enum {AC_BTN,AUTO_BTN,CUR_TEMP_TEXT,DATE_TEXT,DOWN_BTN,HEAT_BTN
-      ,HOLD_BTN,OFF_BTN,PRGM_BTN,SETTINGS_BTN,SET_TEMP_TEXT,UP_BNT};
+enum {DOWN_BTN,SET_TEMP_TEXT,UP_BNT};
 // Must use separate enum for fonts with MAX_FONT at end to use gslc_FontSet.
 enum {E_FONT_TXT5,MAX_FONT};
 //<Enum !End!>
@@ -58,7 +57,7 @@ enum {E_FONT_TXT5,MAX_FONT};
 //<ElementDefines !Start!>
 #define MAX_PAGE                1
 
-#define MAX_ELEM_PG_MAIN 12 // # Elems total on page
+#define MAX_ELEM_PG_MAIN 3 // # Elems total on page
 #define MAX_ELEM_PG_MAIN_RAM MAX_ELEM_PG_MAIN // # Elems in RAM
 //<ElementDefines !End!>
 
@@ -103,29 +102,6 @@ bool CbBtnCommon(void* pvGui,void *pvElemRef,gslc_teTouch eTouch,int16_t nX,int1
     switch (pElem->nId) {
 //<Button Enums !Start!>
       case DOWN_BTN:
-        //TODO- Replace with button handling code
-        break;
-      case PRGM_BTN:
-        //TODO- Check the code to see what else you may need to add
-        gslc_SetPageCur(&m_gui,E_PG2);
-        break;
-      case SETTINGS_BTN:
-        //TODO- Check the code to see what else you may need to add
-        gslc_SetPageCur(&m_gui,E_PG3);
-        break;
-      case HOLD_BTN:
-        //TODO- Replace with button handling code
-        break;
-      case HEAT_BTN:
-        //TODO- Replace with button handling code
-        break;
-      case AC_BTN:
-        //TODO- Replace with button handling code
-        break;
-      case AUTO_BTN:
-        //TODO- Replace with button handling code
-        break;
-      case OFF_BTN:
         //TODO- Replace with button handling code
         break;
       case UP_BNT:
@@ -181,49 +157,9 @@ bool InitGUI()
   gslc_ElemSetTxtCol(&m_gui,pElemRef,GSLC_COL_BLACK);
   gslc_ElemSetCol(&m_gui,pElemRef,GSLC_COL_BLACK,GSLC_COL_WHITE,GSLC_COL_BLACK);
   
-  // Create CUR_TEMP_TEXT text label
-  pElemRef = gslc_ElemCreateTxt(&m_gui,CUR_TEMP_TEXT,E_PG_MAIN,(gslc_tsRect){20,110,72,10},
-    (char*)"Current Temp",0,E_FONT_TXT5);
-  gslc_ElemSetTxtCol(&m_gui,pElemRef,GSLC_COL_BLACK);
-  gslc_ElemSetCol(&m_gui,pElemRef,GSLC_COL_GRAY_DK3,GSLC_COL_WHITE,GSLC_COL_BLACK);
-  
-  // Create DATE_TEXT text label
-  pElemRef = gslc_ElemCreateTxt(&m_gui,DATE_TEXT,E_PG_MAIN,(gslc_tsRect){10,10,24,10},
-    (char*)"Date",0,E_FONT_TXT5);
-  gslc_ElemSetTxtCol(&m_gui,pElemRef,GSLC_COL_BLACK);
-  gslc_ElemSetCol(&m_gui,pElemRef,GSLC_COL_GRAY,GSLC_COL_WHITE,GSLC_COL_BLACK);
-  
   // create DOWN_BTN button with text label
   pElemRef = gslc_ElemCreateBtnTxt(&m_gui,DOWN_BTN,E_PG_MAIN,
     (gslc_tsRect){120,140,80,40},(char*)"Down",0,E_FONT_TXT5,&CbBtnCommon);
-  
-  // create PRGM_BTN button with text label
-  pElemRef = gslc_ElemCreateBtnTxt(&m_gui,PRGM_BTN,E_PG_MAIN,
-    (gslc_tsRect){260,10,50,30},(char*)"Program",0,E_FONT_TXT5,&CbBtnCommon);
-  
-  // create SETTINGS_BTN button with text label
-  pElemRef = gslc_ElemCreateBtnTxt(&m_gui,SETTINGS_BTN,E_PG_MAIN,
-    (gslc_tsRect){50,10,60,30},(char*)"Settings",0,E_FONT_TXT5,&CbBtnCommon);
-  
-  // create HOLD_BTN button with text label
-  pElemRef = gslc_ElemCreateBtnTxt(&m_gui,HOLD_BTN,E_PG_MAIN,
-    (gslc_tsRect){240,100,40,30},(char*)"Hold",0,E_FONT_TXT5,&CbBtnCommon);
-  
-  // create HEAT_BTN button with text label
-  pElemRef = gslc_ElemCreateBtnTxt(&m_gui,HEAT_BTN,E_PG_MAIN,
-    (gslc_tsRect){10,190,40,40},(char*)"Heat",0,E_FONT_TXT5,&CbBtnCommon);
-  
-  // create AC_BTN button with text label
-  pElemRef = gslc_ElemCreateBtnTxt(&m_gui,AC_BTN,E_PG_MAIN,
-    (gslc_tsRect){70,190,40,40},(char*)"AC",0,E_FONT_TXT5,&CbBtnCommon);
-  
-  // create AUTO_BTN button with text label
-  pElemRef = gslc_ElemCreateBtnTxt(&m_gui,AUTO_BTN,E_PG_MAIN,
-    (gslc_tsRect){130,190,40,40},(char*)"Auto",0,E_FONT_TXT5,&CbBtnCommon);
-  
-  // create OFF_BTN button with text label
-  pElemRef = gslc_ElemCreateBtnTxt(&m_gui,OFF_BTN,E_PG_MAIN,
-    (gslc_tsRect){190,190,40,40},(char*)"Off",0,E_FONT_TXT5,&CbBtnCommon);
   
   // create UP_BNT button with text label
   pElemRef = gslc_ElemCreateBtnTxt(&m_gui,UP_BNT,E_PG_MAIN,
