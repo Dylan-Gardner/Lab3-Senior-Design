@@ -40,12 +40,8 @@
 // Defines for resources
 // ------------------------------------------------
 //<Resources !Start!>
-#define IMG_FIRE                  "/fire.bmp"
-#define IMG_GREEN_LIGHT           "/green_light.bmp"
-#define IMG_PIXILFRAME0           "/pixil-frame-0.bmp"
-#define IMG_PIXILFRAME0_SEL       "/pixil-frame-0.bmp"
-#define IMG_RED_LIGHT             "/red_light.bmp"
-#define IMG_SNOWFLAKE             "/snowflake.bmp"
+#define IMG_EXIT_G24              "/exit_g24.bmp"
+#define IMG_EXIT_G24_SEL          "/exit_g24.bmp"
 //<Resources !End!>
 
 // ------------------------------------------------
@@ -53,18 +49,17 @@
 // ------------------------------------------------
 //<Enum !Start!>
 enum {E_PG_MAIN,E_PG2,E_PG3,E_PG4};
-enum {AC_BTN,AM_PM_DOWN,AM_PM_TEXT,AM_PM_UP,AUTO_BTN,CUR_TEMP_TEXT
-      ,DATE_TEXT,DAY_DOWN,DAY_TEXT,DAY_UP,DOWN_BTN,ENABLE_BTN
-      ,E_DRAW_LINE1,E_ELEM_IBTN10,E_ELEM_IBTN11,E_ELEM_IBTN12
-      ,E_ELEM_IBTN5,E_ELEM_IBTN9,E_ELEM_IMAGE9,E_ELEM_TEXT16
-      ,E_ELEM_TEXT17,E_ELEM_TEXT7,E_ELEM_TEXT8,FIRE_IMG,HEAT_BTN
-      ,HOLD_BTN,HOME_BTN_1,HOME_BTN_2,HOUR_DOWN,HOUR_TEXT,HOUR_UP
-      ,MIN_DOWN,MIN_TEXT,MIN_UP,MONTH_DOWN,MONTH_TEXT,MONTH_UP,OFF_BTN
-      ,PRGM_BTN,SAVE_BTN,SETTINGS_BTN,SET_PROGRAM_TEMP_TEXT
-      ,SET_TEMP_TEXT,SNOW_IMG,WK1_PRG_LIGHT,WK2_PRG_LIGHT,WK3_PRG_LIGHT
-      ,WK4_PRG_LIGHT,WKND1_PRG_LIGHT,WKND2_PRG_LIGHT,WKND3_PRG_LIGHT
-      ,WKND_1_BTN,WKND_2_BTN,WKND_3_BTN,WKND_4_BTN,WK_1_BTN,WK_2_BTN
-      ,WK_3_BTN,WK_4_BTN,YEAR_DOWN,YEAR_TEXT,YEAR_UP};
+enum {AC_BTN,AUTO_BTN,CUR_TEMP_TEXT,DATE_TEXT,DOWN_BTN,E_DRAW_LINE1
+      ,E_ELEM_BTN22,E_ELEM_BTN23,E_ELEM_BTN24,E_ELEM_BTN25,E_ELEM_BTN26
+      ,E_ELEM_BTN27,E_ELEM_BTN28,E_ELEM_BTN29,E_ELEM_BTN30,E_ELEM_BTN31
+      ,E_ELEM_BTN32,E_ELEM_BTN33,E_ELEM_BTN35,E_ELEM_BTN36,E_ELEM_BTN37
+      ,E_ELEM_BTN38,E_ELEM_BTN40,E_ELEM_BTN41,E_ELEM_TEXT10
+      ,E_ELEM_TEXT11,E_ELEM_TEXT12,E_ELEM_TEXT13,E_ELEM_TEXT14
+      ,E_ELEM_TEXT15,E_ELEM_TEXT16,E_ELEM_TEXT17,E_ELEM_TEXT7
+      ,E_ELEM_TEXT8,E_ELEM_TEXT9,HEAT_BTN,HOLD_BTN,HOME_BUTTON_1
+      ,HOME_BUTTON_2,IMAGE_BUTTON,OFF_BTN,PRGM_BTN,SETTINGS_BTN
+      ,SET_TEMP_TEXT,UP_BNT,WKND_1_BTN,WKND_2_BTN,WKND_3_BTN,WKND_4_BTN
+      ,WK_1_BTN,WK_2_BTN,WK_3_BTN,WK_4_BTN};
 // Must use separate enum for fonts with MAX_FONT at end to use gslc_FontSet.
 enum {E_FONT_TXT5,MAX_FONT};
 //<Enum !End!>
@@ -79,16 +74,16 @@ enum {E_FONT_TXT5,MAX_FONT};
 //<ElementDefines !Start!>
 #define MAX_PAGE                4
 
-#define MAX_ELEM_PG_MAIN 14 // # Elems total on page
+#define MAX_ELEM_PG_MAIN 12 // # Elems total on page
 #define MAX_ELEM_PG_MAIN_RAM MAX_ELEM_PG_MAIN // # Elems in RAM
 
-#define MAX_ELEM_PG2 20 // # Elems total on page
+#define MAX_ELEM_PG2 12 // # Elems total on page
 #define MAX_ELEM_PG2_RAM MAX_ELEM_PG2 // # Elems in RAM
 
 #define MAX_ELEM_PG3 19 // # Elems total on page
 #define MAX_ELEM_PG3_RAM MAX_ELEM_PG3 // # Elems in RAM
 
-#define MAX_ELEM_PG4 9 // # Elems total on page
+#define MAX_ELEM_PG4 10 // # Elems total on page
 #define MAX_ELEM_PG4_RAM MAX_ELEM_PG4 // # Elems in RAM
 //<ElementDefines !End!>
 
@@ -121,7 +116,6 @@ gslc_tsElemRef                  m_asPage4ElemRef[MAX_ELEM_PG4];
 // Save some element references for direct access
 //<Save_References !Start!>
 gslc_tsElemRef*  m_pElemOutTxt1    = NULL;
-gslc_tsElemRef*  m_pElemOutTxt4    = NULL;
 //<Save_References !End!>
 
 // Define debug message function
@@ -166,6 +160,10 @@ bool CbBtnCommon(void* pvGui,void *pvElemRef,gslc_teTouch eTouch,int16_t nX,int1
       case OFF_BTN:
         //TODO- Replace with button handling code
         break;
+      case HOME_BUTTON_1:
+        //TODO- Check the code to see what else you may need to add
+        gslc_SetPageCur(&m_gui,E_PG_MAIN);
+        break;
       case WK_1_BTN:
         //TODO- Replace with button handling code
         break;
@@ -190,68 +188,70 @@ bool CbBtnCommon(void* pvGui,void *pvElemRef,gslc_teTouch eTouch,int16_t nX,int1
       case WKND_4_BTN:
         //TODO- Replace with button handling code
         break;
-      case E_ELEM_IBTN5:
+      case HOME_BUTTON_2:
+        //TODO- Check the code to see what else you may need to add
+        gslc_SetPageCur(&m_gui,E_PG_MAIN);
+        break;
+      case E_ELEM_BTN22:
         //TODO- Replace with button handling code
         break;
-      case HOME_BTN_1:
+      case E_ELEM_BTN23:
         //TODO- Replace with button handling code
         break;
-      case E_ELEM_IBTN9:
+      case E_ELEM_BTN24:
         //TODO- Replace with button handling code
         break;
-      case E_ELEM_IBTN10:
+      case E_ELEM_BTN25:
         //TODO- Replace with button handling code
         break;
-      case E_ELEM_IBTN11:
+      case E_ELEM_BTN26:
         //TODO- Replace with button handling code
         break;
-      case E_ELEM_IBTN12:
+      case E_ELEM_BTN27:
         //TODO- Replace with button handling code
         break;
-      case MIN_UP:
+      case E_ELEM_BTN28:
         //TODO- Replace with button handling code
         break;
-      case AM_PM_UP:
+      case E_ELEM_BTN29:
         //TODO- Replace with button handling code
         break;
-      case HOME_BTN_2:
+      case E_ELEM_BTN30:
         //TODO- Replace with button handling code
         break;
-      case MONTH_DOWN:
+      case E_ELEM_BTN31:
         //TODO- Replace with button handling code
         break;
-      case DAY_DOWN:
+      case E_ELEM_BTN32:
         //TODO- Replace with button handling code
         break;
-      case YEAR_DOWN:
+      case E_ELEM_BTN33:
         //TODO- Replace with button handling code
         break;
-      case HOUR_DOWN:
+      case UP_BNT:
         //TODO- Replace with button handling code
         break;
-      case MIN_DOWN:
+      case E_ELEM_BTN35:
         //TODO- Replace with button handling code
         break;
-      case AM_PM_DOWN:
+      case E_ELEM_BTN36:
         //TODO- Replace with button handling code
         break;
-      case SAVE_BTN:
+      case E_ELEM_BTN37:
         //TODO- Replace with button handling code
         break;
-      case ENABLE_BTN:
+      case E_ELEM_BTN38:
         //TODO- Replace with button handling code
         break;
-      case MONTH_UP:
+      case E_ELEM_BTN40:
         //TODO- Replace with button handling code
         break;
-      case DAY_UP:
+      case E_ELEM_BTN41:
         //TODO- Replace with button handling code
         break;
-      case YEAR_UP:
-        //TODO- Replace with button handling code
-        break;
-      case HOUR_UP:
-        //TODO- Replace with button handling code
+      case IMAGE_BUTTON:
+        //TODO- Check the code to see what else you may need to add
+        gslc_SetPageCur(&m_gui,E_PG_MAIN);
         break;
 //<Button Enums !End!>
       default:
@@ -300,10 +300,9 @@ bool InitGUI()
   
   
   // Create SET_TEMP_TEXT runtime modifiable text
-  static char m_sDisplayText1[10] = "Temp";
-  pElemRef = gslc_ElemCreateTxt(&m_gui,SET_TEMP_TEXT,E_PG_MAIN,(gslc_tsRect){130,110,48,10},
-    (char*)m_sDisplayText1,10,E_FONT_TXT5);
-  gslc_ElemSetTxtAlign(&m_gui,pElemRef,GSLC_ALIGN_MID_MID);
+  static char m_sDisplayText1[11] = "Temp";
+  pElemRef = gslc_ElemCreateTxt(&m_gui,SET_TEMP_TEXT,E_PG_MAIN,(gslc_tsRect){140,110,54,10},
+    (char*)m_sDisplayText1,11,E_FONT_TXT5);
   gslc_ElemSetTxtCol(&m_gui,pElemRef,GSLC_COL_BLACK);
   gslc_ElemSetCol(&m_gui,pElemRef,GSLC_COL_BLACK,GSLC_COL_WHITE,GSLC_COL_BLACK);
   m_pElemOutTxt1 = pElemRef;
@@ -314,17 +313,23 @@ bool InitGUI()
   gslc_ElemSetTxtCol(&m_gui,pElemRef,GSLC_COL_BLACK);
   gslc_ElemSetCol(&m_gui,pElemRef,GSLC_COL_GRAY_DK3,GSLC_COL_WHITE,GSLC_COL_BLACK);
   
-  // Create DATE_TEXT runtime modifiable text
-  static char m_sDisplayText4[11] = "Date";
-  pElemRef = gslc_ElemCreateTxt(&m_gui,DATE_TEXT,E_PG_MAIN,(gslc_tsRect){10,25,54,10},
-    (char*)m_sDisplayText4,11,E_FONT_TXT5);
+  // Create DATE_TEXT text label
+  pElemRef = gslc_ElemCreateTxt(&m_gui,DATE_TEXT,E_PG_MAIN,(gslc_tsRect){10,10,24,10},
+    (char*)"Date",0,E_FONT_TXT5);
   gslc_ElemSetTxtCol(&m_gui,pElemRef,GSLC_COL_BLACK);
   gslc_ElemSetCol(&m_gui,pElemRef,GSLC_COL_GRAY,GSLC_COL_WHITE,GSLC_COL_BLACK);
-  m_pElemOutTxt4 = pElemRef;
+  
+  // create DOWN_BTN button with text label
+  pElemRef = gslc_ElemCreateBtnTxt(&m_gui,DOWN_BTN,E_PG_MAIN,
+    (gslc_tsRect){120,140,80,40},(char*)"Down",0,E_FONT_TXT5,&CbBtnCommon);
   
   // create PRGM_BTN button with text label
   pElemRef = gslc_ElemCreateBtnTxt(&m_gui,PRGM_BTN,E_PG_MAIN,
-    (gslc_tsRect){260,10,50,40},(char*)"Program",0,E_FONT_TXT5,&CbBtnCommon);
+    (gslc_tsRect){260,10,50,30},(char*)"Program",0,E_FONT_TXT5,&CbBtnCommon);
+  
+  // create SETTINGS_BTN button with text label
+  pElemRef = gslc_ElemCreateBtnTxt(&m_gui,SETTINGS_BTN,E_PG_MAIN,
+    (gslc_tsRect){50,10,60,30},(char*)"Settings",0,E_FONT_TXT5,&CbBtnCommon);
   
   // create HOLD_BTN button with text label
   pElemRef = gslc_ElemCreateBtnTxt(&m_gui,HOLD_BTN,E_PG_MAIN,
@@ -346,40 +351,17 @@ bool InitGUI()
   pElemRef = gslc_ElemCreateBtnTxt(&m_gui,OFF_BTN,E_PG_MAIN,
     (gslc_tsRect){260,190,50,40},(char*)"Off",0,E_FONT_TXT5,&CbBtnCommon);
   
-  // Create E_ELEM_IBTN5 button with image label
-  pElemRef = gslc_ElemCreateBtnImg(&m_gui,E_ELEM_IBTN5,E_PG_MAIN,(gslc_tsRect){130,50,50,40},
-          gslc_GetImageFromProg((const unsigned char*)IMG_PIXILFRAME0,GSLC_IMGREF_FMT_BMP24),
-          gslc_GetImageFromProg((const unsigned char*)IMG_PIXILFRAME0_SEL,GSLC_IMGREF_FMT_BMP24),
-          &CbBtnCommon);
-  gslc_ElemSetFillEn(&m_gui,pElemRef,false);
-  
-  // Create DOWN_BTN button with image label
-  pElemRef = gslc_ElemCreateBtnImg(&m_gui,DOWN_BTN,E_PG_MAIN,(gslc_tsRect){130,130,50,40},
-          gslc_GetImageFromProg((const unsigned char*)IMG_PIXILFRAME0,GSLC_IMGREF_FMT_BMP24),
-          gslc_GetImageFromProg((const unsigned char*)IMG_PIXILFRAME0_SEL,GSLC_IMGREF_FMT_BMP24),
-          &CbBtnCommon);
-  gslc_ElemSetFillEn(&m_gui,pElemRef,false);
-  
-  // Create SETTINGS_BTN button with image label
-  pElemRef = gslc_ElemCreateBtnImg(&m_gui,SETTINGS_BTN,E_PG_MAIN,(gslc_tsRect){60,10,50,40},
-          gslc_GetImageFromProg((const unsigned char*)IMG_PIXILFRAME0,GSLC_IMGREF_FMT_BMP24),
-          gslc_GetImageFromProg((const unsigned char*)IMG_PIXILFRAME0_SEL,GSLC_IMGREF_FMT_BMP24),
-          &CbBtnCommon);
-  gslc_ElemSetFillEn(&m_gui,pElemRef,false);
- 
-  // Create E_ELEM_IMAGE9 using Image 
-  pElemRef = gslc_ElemCreateImg(&m_gui,E_ELEM_IMAGE9,E_PG_MAIN,(gslc_tsRect){40,200,20,20},
-    gslc_GetImageFromSD((const char*)IMG_SNOWFLAKE,GSLC_IMGREF_FMT_BMP24));
-  gslc_ElemSetFillEn(&m_gui,pElemRef,false);
- 
-  // Create FIRE_IMG using Image 
-  pElemRef = gslc_ElemCreateImg(&m_gui,FIRE_IMG,E_PG_MAIN,(gslc_tsRect){10,200,20,20},
-    gslc_GetImageFromProg((const unsigned char*)IMG_FIRE,GSLC_IMGREF_FMT_BMP24));
-  gslc_ElemSetFillEn(&m_gui,pElemRef,false);
+  // create UP_BNT button with text label
+  pElemRef = gslc_ElemCreateBtnTxt(&m_gui,UP_BNT,E_PG_MAIN,
+    (gslc_tsRect){120,50,80,40},(char*)"Up",0,E_FONT_TXT5,&CbBtnCommon);
 
   // -----------------------------------
   // PAGE: E_PG2
   
+  
+  // create HOME_BUTTON_1 button with text label
+  pElemRef = gslc_ElemCreateBtnTxt(&m_gui,HOME_BUTTON_1,E_PG2,
+    (gslc_tsRect){140,190,50,40},(char*)"Home",0,E_FONT_TXT5,&CbBtnCommon);
   
   // Create E_ELEM_TEXT7 text label
   pElemRef = gslc_ElemCreateTxt(&m_gui,E_ELEM_TEXT7,E_PG2,(gslc_tsRect){30,10,42,10},
@@ -388,7 +370,7 @@ bool InitGUI()
   gslc_ElemSetCol(&m_gui,pElemRef,GSLC_COL_GRAY,GSLC_COL_WHITE,GSLC_COL_BLACK);
   
   // Create E_ELEM_TEXT8 text label
-  pElemRef = gslc_ElemCreateTxt(&m_gui,E_ELEM_TEXT8,E_PG2,(gslc_tsRect){220,10,42,10},
+  pElemRef = gslc_ElemCreateTxt(&m_gui,E_ELEM_TEXT8,E_PG2,(gslc_tsRect){230,10,42,10},
     (char*)"Weekend",0,E_FONT_TXT5);
   gslc_ElemSetTxtCol(&m_gui,pElemRef,GSLC_COL_BLACK);
   gslc_ElemSetCol(&m_gui,pElemRef,GSLC_COL_GRAY,GSLC_COL_WHITE,GSLC_COL_BLACK);
@@ -415,218 +397,140 @@ bool InitGUI()
   
   // create WKND_1_BTN button with text label
   pElemRef = gslc_ElemCreateBtnTxt(&m_gui,WKND_1_BTN,E_PG2,
-    (gslc_tsRect){180,30,80,30},(char*)"Program 1",0,E_FONT_TXT5,&CbBtnCommon);
+    (gslc_tsRect){230,30,80,30},(char*)"Program 1",0,E_FONT_TXT5,&CbBtnCommon);
   
   // create WKND_2_BTN button with text label
   pElemRef = gslc_ElemCreateBtnTxt(&m_gui,WKND_2_BTN,E_PG2,
-    (gslc_tsRect){180,70,80,30},(char*)"Program 2",0,E_FONT_TXT5,&CbBtnCommon);
+    (gslc_tsRect){230,70,80,30},(char*)"Program 2",0,E_FONT_TXT5,&CbBtnCommon);
   
   // create WKND_3_BTN button with text label
   pElemRef = gslc_ElemCreateBtnTxt(&m_gui,WKND_3_BTN,E_PG2,
-    (gslc_tsRect){180,110,80,30},(char*)"Program 3",0,E_FONT_TXT5,&CbBtnCommon);
+    (gslc_tsRect){230,110,80,30},(char*)"Program 3",0,E_FONT_TXT5,&CbBtnCommon);
   
   // create WKND_4_BTN button with text label
   pElemRef = gslc_ElemCreateBtnTxt(&m_gui,WKND_4_BTN,E_PG2,
-    (gslc_tsRect){180,150,80,30},(char*)"Program 4",0,E_FONT_TXT5,&CbBtnCommon);
-  
-  // Create HOME_BTN_1 button with image label
-  pElemRef = gslc_ElemCreateBtnImg(&m_gui,HOME_BTN_1,E_PG2,(gslc_tsRect){140,190,50,40},
-          gslc_GetImageFromProg((const unsigned char*)IMG_PIXILFRAME0,GSLC_IMGREF_FMT_BMP24),
-          gslc_GetImageFromProg((const unsigned char*)IMG_PIXILFRAME0_SEL,GSLC_IMGREF_FMT_BMP24),
-          &CbBtnCommon);
-  gslc_ElemSetFillEn(&m_gui,pElemRef,false);
- 
-  // Create WKND1_PRG_LIGHT using Image 
-  pElemRef = gslc_ElemCreateImg(&m_gui,WKND1_PRG_LIGHT,E_PG2,(gslc_tsRect){270,30,30,30},
-    gslc_GetImageFromProg((const unsigned char*)IMG_RED_LIGHT,GSLC_IMGREF_FMT_BMP24));
-  gslc_ElemSetFillEn(&m_gui,pElemRef,false);
- 
-  // Create WK1_PRG_LIGHT using Image 
-  pElemRef = gslc_ElemCreateImg(&m_gui,WK1_PRG_LIGHT,E_PG2,(gslc_tsRect){100,30,30,30},
-    gslc_GetImageFromProg((const unsigned char*)IMG_RED_LIGHT,GSLC_IMGREF_FMT_BMP24));
-  gslc_ElemSetFillEn(&m_gui,pElemRef,false);
- 
-  // Create WK2_PRG_LIGHT using Image 
-  pElemRef = gslc_ElemCreateImg(&m_gui,WK2_PRG_LIGHT,E_PG2,(gslc_tsRect){100,70,30,30},
-    gslc_GetImageFromProg((const unsigned char*)IMG_GREEN_LIGHT,GSLC_IMGREF_FMT_BMP24));
-  gslc_ElemSetFillEn(&m_gui,pElemRef,false);
- 
-  // Create WK3_PRG_LIGHT using Image 
-  pElemRef = gslc_ElemCreateImg(&m_gui,WK3_PRG_LIGHT,E_PG2,(gslc_tsRect){100,110,30,30},
-    gslc_GetImageFromProg((const unsigned char*)IMG_GREEN_LIGHT,GSLC_IMGREF_FMT_BMP24));
-  gslc_ElemSetFillEn(&m_gui,pElemRef,false);
- 
-  // Create WK4_PRG_LIGHT using Image 
-  pElemRef = gslc_ElemCreateImg(&m_gui,WK4_PRG_LIGHT,E_PG2,(gslc_tsRect){100,150,30,30},
-    gslc_GetImageFromProg((const unsigned char*)IMG_RED_LIGHT,GSLC_IMGREF_FMT_BMP24));
-  gslc_ElemSetFillEn(&m_gui,pElemRef,false);
- 
-  // Create WKND2_PRG_LIGHT using Image 
-  pElemRef = gslc_ElemCreateImg(&m_gui,WKND2_PRG_LIGHT,E_PG2,(gslc_tsRect){270,70,30,30},
-    gslc_GetImageFromProg((const unsigned char*)IMG_RED_LIGHT,GSLC_IMGREF_FMT_BMP24));
-  gslc_ElemSetFillEn(&m_gui,pElemRef,false);
- 
-  // Create WKND3_PRG_LIGHT using Image 
-  pElemRef = gslc_ElemCreateImg(&m_gui,WKND3_PRG_LIGHT,E_PG2,(gslc_tsRect){270,110,30,30},
-    gslc_GetImageFromProg((const unsigned char*)IMG_GREEN_LIGHT,GSLC_IMGREF_FMT_BMP24));
-  gslc_ElemSetFillEn(&m_gui,pElemRef,false);
- 
-  // Create SNOW_IMG using Image 
-  pElemRef = gslc_ElemCreateImg(&m_gui,SNOW_IMG,E_PG2,(gslc_tsRect){270,150,30,30},
-    gslc_GetImageFromProg((const unsigned char*)IMG_GREEN_LIGHT,GSLC_IMGREF_FMT_BMP24));
-  gslc_ElemSetFillEn(&m_gui,pElemRef,false);
+    (gslc_tsRect){230,150,80,30},(char*)"Program 4",0,E_FONT_TXT5,&CbBtnCommon);
 
   // -----------------------------------
   // PAGE: E_PG3
   
   
-  // Create MONTH_TEXT text label
-  pElemRef = gslc_ElemCreateTxt(&m_gui,MONTH_TEXT,E_PG3,(gslc_tsRect){30,120,12,10},
+  // Create E_ELEM_TEXT9 text label
+  pElemRef = gslc_ElemCreateTxt(&m_gui,E_ELEM_TEXT9,E_PG3,(gslc_tsRect){20,120,12,10},
     (char*)"12",0,E_FONT_TXT5);
   gslc_ElemSetTxtCol(&m_gui,pElemRef,GSLC_COL_BLACK);
   gslc_ElemSetCol(&m_gui,pElemRef,GSLC_COL_GRAY,GSLC_COL_WHITE,GSLC_COL_BLACK);
   
-  // Create DAY_TEXT text label
-  pElemRef = gslc_ElemCreateTxt(&m_gui,DAY_TEXT,E_PG3,(gslc_tsRect){80,120,12,10},
+  // Create E_ELEM_TEXT10 text label
+  pElemRef = gslc_ElemCreateTxt(&m_gui,E_ELEM_TEXT10,E_PG3,(gslc_tsRect){60,120,12,10},
     (char*)"05",0,E_FONT_TXT5);
   gslc_ElemSetTxtCol(&m_gui,pElemRef,GSLC_COL_BLACK);
   gslc_ElemSetCol(&m_gui,pElemRef,GSLC_COL_GRAY,GSLC_COL_WHITE,GSLC_COL_BLACK);
   
-  // Create YEAR_TEXT text label
-  pElemRef = gslc_ElemCreateTxt(&m_gui,YEAR_TEXT,E_PG3,(gslc_tsRect){120,120,24,10},
+  // Create E_ELEM_TEXT11 text label
+  pElemRef = gslc_ElemCreateTxt(&m_gui,E_ELEM_TEXT11,E_PG3,(gslc_tsRect){110,110,24,10},
     (char*)"2019",0,E_FONT_TXT5);
   gslc_ElemSetTxtCol(&m_gui,pElemRef,GSLC_COL_BLACK);
   gslc_ElemSetCol(&m_gui,pElemRef,GSLC_COL_GRAY,GSLC_COL_WHITE,GSLC_COL_BLACK);
   
-  // Create HOUR_TEXT text label
-  pElemRef = gslc_ElemCreateTxt(&m_gui,HOUR_TEXT,E_PG3,(gslc_tsRect){180,120,6,10},
+  // create HOME_BUTTON_2 button with text label
+  pElemRef = gslc_ElemCreateBtnTxt(&m_gui,HOME_BUTTON_2,E_PG3,
+    (gslc_tsRect){260,10,50,40},(char*)"Home",0,E_FONT_TXT5,&CbBtnCommon);
+  
+  // Create E_ELEM_TEXT12 text label
+  pElemRef = gslc_ElemCreateTxt(&m_gui,E_ELEM_TEXT12,E_PG3,(gslc_tsRect){180,110,6,10},
     (char*)"2",0,E_FONT_TXT5);
   gslc_ElemSetTxtCol(&m_gui,pElemRef,GSLC_COL_BLACK);
   gslc_ElemSetCol(&m_gui,pElemRef,GSLC_COL_GRAY,GSLC_COL_WHITE,GSLC_COL_BLACK);
   
-  // Create MIN_TEXT text label
-  pElemRef = gslc_ElemCreateTxt(&m_gui,MIN_TEXT,E_PG3,(gslc_tsRect){230,120,12,10},
+  // Create E_ELEM_TEXT13 text label
+  pElemRef = gslc_ElemCreateTxt(&m_gui,E_ELEM_TEXT13,E_PG3,(gslc_tsRect){230,120,12,10},
     (char*)"58",0,E_FONT_TXT5);
   gslc_ElemSetTxtCol(&m_gui,pElemRef,GSLC_COL_BLACK);
   gslc_ElemSetCol(&m_gui,pElemRef,GSLC_COL_GRAY,GSLC_COL_WHITE,GSLC_COL_BLACK);
   
-  // Create AM_PM_TEXT text label
-  pElemRef = gslc_ElemCreateTxt(&m_gui,AM_PM_TEXT,E_PG3,(gslc_tsRect){280,120,12,10},
+  // Create E_ELEM_TEXT14 text label
+  pElemRef = gslc_ElemCreateTxt(&m_gui,E_ELEM_TEXT14,E_PG3,(gslc_tsRect){280,120,12,10},
     (char*)"AM",0,E_FONT_TXT5);
   gslc_ElemSetTxtCol(&m_gui,pElemRef,GSLC_COL_BLACK);
   gslc_ElemSetCol(&m_gui,pElemRef,GSLC_COL_GRAY,GSLC_COL_WHITE,GSLC_COL_BLACK);
   
-  // Create E_ELEM_IBTN9 button with image label
-  pElemRef = gslc_ElemCreateBtnImg(&m_gui,E_ELEM_IBTN9,E_PG3,(gslc_tsRect){10,60,50,40},
-          gslc_GetImageFromSD((const char*)IMG_PIXILFRAME0,GSLC_IMGREF_FMT_BMP24),
-          gslc_GetImageFromSD((const char*)IMG_PIXILFRAME0_SEL,GSLC_IMGREF_FMT_BMP24),
-          &CbBtnCommon);
-  gslc_ElemSetFillEn(&m_gui,pElemRef,false);
+  // create E_ELEM_BTN22 button with text label
+  pElemRef = gslc_ElemCreateBtnTxt(&m_gui,E_ELEM_BTN22,E_PG3,
+    (gslc_tsRect){160,140,50,40},(char*)"Down",0,E_FONT_TXT5,&CbBtnCommon);
   
-  // Create E_ELEM_IBTN10 button with image label
-  pElemRef = gslc_ElemCreateBtnImg(&m_gui,E_ELEM_IBTN10,E_PG3,(gslc_tsRect){60,60,50,40},
-          gslc_GetImageFromSD((const char*)IMG_PIXILFRAME0,GSLC_IMGREF_FMT_BMP24),
-          gslc_GetImageFromSD((const char*)IMG_PIXILFRAME0_SEL,GSLC_IMGREF_FMT_BMP24),
-          &CbBtnCommon);
-  gslc_ElemSetFillEn(&m_gui,pElemRef,false);
+  // create E_ELEM_BTN23 button with text label
+  pElemRef = gslc_ElemCreateBtnTxt(&m_gui,E_ELEM_BTN23,E_PG3,
+    (gslc_tsRect){210,140,50,40},(char*)"Down",0,E_FONT_TXT5,&CbBtnCommon);
   
-  // Create E_ELEM_IBTN11 button with image label
-  pElemRef = gslc_ElemCreateBtnImg(&m_gui,E_ELEM_IBTN11,E_PG3,(gslc_tsRect){110,60,50,40},
-          gslc_GetImageFromSD((const char*)IMG_PIXILFRAME0,GSLC_IMGREF_FMT_BMP24),
-          gslc_GetImageFromSD((const char*)IMG_PIXILFRAME0_SEL,GSLC_IMGREF_FMT_BMP24),
-          &CbBtnCommon);
-  gslc_ElemSetFillEn(&m_gui,pElemRef,false);
+  // create E_ELEM_BTN24 button with text label
+  pElemRef = gslc_ElemCreateBtnTxt(&m_gui,E_ELEM_BTN24,E_PG3,
+    (gslc_tsRect){260,140,50,40},(char*)"Down",0,E_FONT_TXT5,&CbBtnCommon);
   
-  // Create E_ELEM_IBTN12 button with image label
-  pElemRef = gslc_ElemCreateBtnImg(&m_gui,E_ELEM_IBTN12,E_PG3,(gslc_tsRect){160,60,50,40},
-          gslc_GetImageFromSD((const char*)IMG_PIXILFRAME0,GSLC_IMGREF_FMT_BMP24),
-          gslc_GetImageFromSD((const char*)IMG_PIXILFRAME0_SEL,GSLC_IMGREF_FMT_BMP24),
-          &CbBtnCommon);
-  gslc_ElemSetFillEn(&m_gui,pElemRef,false);
+  // create E_ELEM_BTN25 button with text label
+  pElemRef = gslc_ElemCreateBtnTxt(&m_gui,E_ELEM_BTN25,E_PG3,
+    (gslc_tsRect){260,60,50,40},(char*)"Up",0,E_FONT_TXT5,&CbBtnCommon);
   
-  // Create MIN_UP button with image label
-  pElemRef = gslc_ElemCreateBtnImg(&m_gui,MIN_UP,E_PG3,(gslc_tsRect){210,60,50,40},
-          gslc_GetImageFromProg((const unsigned char*)IMG_PIXILFRAME0,GSLC_IMGREF_FMT_BMP24),
-          gslc_GetImageFromProg((const unsigned char*)IMG_PIXILFRAME0_SEL,GSLC_IMGREF_FMT_BMP24),
-          &CbBtnCommon);
-  gslc_ElemSetFillEn(&m_gui,pElemRef,false);
+  // create E_ELEM_BTN26 button with text label
+  pElemRef = gslc_ElemCreateBtnTxt(&m_gui,E_ELEM_BTN26,E_PG3,
+    (gslc_tsRect){210,60,50,40},(char*)"Up",0,E_FONT_TXT5,&CbBtnCommon);
   
-  // Create AM_PM_UP button with image label
-  pElemRef = gslc_ElemCreateBtnImg(&m_gui,AM_PM_UP,E_PG3,(gslc_tsRect){260,60,50,40},
-          gslc_GetImageFromProg((const unsigned char*)IMG_PIXILFRAME0,GSLC_IMGREF_FMT_BMP24),
-          gslc_GetImageFromProg((const unsigned char*)IMG_PIXILFRAME0_SEL,GSLC_IMGREF_FMT_BMP24),
-          &CbBtnCommon);
-  gslc_ElemSetFillEn(&m_gui,pElemRef,false);
+  // create E_ELEM_BTN27 button with text label
+  pElemRef = gslc_ElemCreateBtnTxt(&m_gui,E_ELEM_BTN27,E_PG3,
+    (gslc_tsRect){160,60,50,40},(char*)"Up",0,E_FONT_TXT5,&CbBtnCommon);
   
-  // Create HOME_BTN_2 button with image label
-  pElemRef = gslc_ElemCreateBtnImg(&m_gui,HOME_BTN_2,E_PG3,(gslc_tsRect){260,10,50,40},
-          gslc_GetImageFromProg((const unsigned char*)IMG_PIXILFRAME0,GSLC_IMGREF_FMT_BMP24),
-          gslc_GetImageFromProg((const unsigned char*)IMG_PIXILFRAME0_SEL,GSLC_IMGREF_FMT_BMP24),
-          &CbBtnCommon);
-  gslc_ElemSetFillEn(&m_gui,pElemRef,false);
+  // create E_ELEM_BTN28 button with text label
+  pElemRef = gslc_ElemCreateBtnTxt(&m_gui,E_ELEM_BTN28,E_PG3,
+    (gslc_tsRect){10,60,50,40},(char*)"Up",0,E_FONT_TXT5,&CbBtnCommon);
   
-  // Create MONTH_DOWN button with image label
-  pElemRef = gslc_ElemCreateBtnImg(&m_gui,MONTH_DOWN,E_PG3,(gslc_tsRect){10,150,50,40},
-          gslc_GetImageFromProg((const unsigned char*)IMG_PIXILFRAME0,GSLC_IMGREF_FMT_BMP24),
-          gslc_GetImageFromProg((const unsigned char*)IMG_PIXILFRAME0_SEL,GSLC_IMGREF_FMT_BMP24),
-          &CbBtnCommon);
-  gslc_ElemSetFillEn(&m_gui,pElemRef,false);
+  // create E_ELEM_BTN29 button with text label
+  pElemRef = gslc_ElemCreateBtnTxt(&m_gui,E_ELEM_BTN29,E_PG3,
+    (gslc_tsRect){10,140,50,40},(char*)"Down",0,E_FONT_TXT5,&CbBtnCommon);
   
-  // Create DAY_DOWN button with image label
-  pElemRef = gslc_ElemCreateBtnImg(&m_gui,DAY_DOWN,E_PG3,(gslc_tsRect){60,150,50,40},
-          gslc_GetImageFromProg((const unsigned char*)IMG_PIXILFRAME0,GSLC_IMGREF_FMT_BMP24),
-          gslc_GetImageFromProg((const unsigned char*)IMG_PIXILFRAME0_SEL,GSLC_IMGREF_FMT_BMP24),
-          &CbBtnCommon);
-  gslc_ElemSetFillEn(&m_gui,pElemRef,false);
+  // create E_ELEM_BTN30 button with text label
+  pElemRef = gslc_ElemCreateBtnTxt(&m_gui,E_ELEM_BTN30,E_PG3,
+    (gslc_tsRect){60,140,50,40},(char*)"Down",0,E_FONT_TXT5,&CbBtnCommon);
   
-  // Create YEAR_DOWN button with image label
-  pElemRef = gslc_ElemCreateBtnImg(&m_gui,YEAR_DOWN,E_PG3,(gslc_tsRect){110,150,50,40},
-          gslc_GetImageFromProg((const unsigned char*)IMG_PIXILFRAME0,GSLC_IMGREF_FMT_BMP24),
-          gslc_GetImageFromProg((const unsigned char*)IMG_PIXILFRAME0_SEL,GSLC_IMGREF_FMT_BMP24),
-          &CbBtnCommon);
-  gslc_ElemSetFillEn(&m_gui,pElemRef,false);
+  // create E_ELEM_BTN31 button with text label
+  pElemRef = gslc_ElemCreateBtnTxt(&m_gui,E_ELEM_BTN31,E_PG3,
+    (gslc_tsRect){110,140,50,40},(char*)"Down",0,E_FONT_TXT5,&CbBtnCommon);
   
-  // Create HOUR_DOWN button with image label
-  pElemRef = gslc_ElemCreateBtnImg(&m_gui,HOUR_DOWN,E_PG3,(gslc_tsRect){160,150,50,40},
-          gslc_GetImageFromProg((const unsigned char*)IMG_PIXILFRAME0,GSLC_IMGREF_FMT_BMP24),
-          gslc_GetImageFromProg((const unsigned char*)IMG_PIXILFRAME0_SEL,GSLC_IMGREF_FMT_BMP24),
-          &CbBtnCommon);
-  gslc_ElemSetFillEn(&m_gui,pElemRef,false);
+  // create E_ELEM_BTN32 button with text label
+  pElemRef = gslc_ElemCreateBtnTxt(&m_gui,E_ELEM_BTN32,E_PG3,
+    (gslc_tsRect){60,60,50,40},(char*)"Up",0,E_FONT_TXT5,&CbBtnCommon);
   
-  // Create MIN_DOWN button with image label
-  pElemRef = gslc_ElemCreateBtnImg(&m_gui,MIN_DOWN,E_PG3,(gslc_tsRect){210,150,50,40},
-          gslc_GetImageFromProg((const unsigned char*)IMG_PIXILFRAME0,GSLC_IMGREF_FMT_BMP24),
-          gslc_GetImageFromProg((const unsigned char*)IMG_PIXILFRAME0_SEL,GSLC_IMGREF_FMT_BMP24),
-          &CbBtnCommon);
-  gslc_ElemSetFillEn(&m_gui,pElemRef,false);
-  
-  // Create AM_PM_DOWN button with image label
-  pElemRef = gslc_ElemCreateBtnImg(&m_gui,AM_PM_DOWN,E_PG3,(gslc_tsRect){260,150,50,40},
-          gslc_GetImageFromProg((const unsigned char*)IMG_PIXILFRAME0,GSLC_IMGREF_FMT_BMP24),
-          gslc_GetImageFromProg((const unsigned char*)IMG_PIXILFRAME0_SEL,GSLC_IMGREF_FMT_BMP24),
-          &CbBtnCommon);
-  gslc_ElemSetFillEn(&m_gui,pElemRef,false);
+  // create E_ELEM_BTN33 button with text label
+  pElemRef = gslc_ElemCreateBtnTxt(&m_gui,E_ELEM_BTN33,E_PG3,
+    (gslc_tsRect){110,60,50,40},(char*)"Up",0,E_FONT_TXT5,&CbBtnCommon);
 
   // -----------------------------------
   // PAGE: E_PG4
   
   
-  // Create SET_PROGRAM_TEMP_TEXT text label
-  pElemRef = gslc_ElemCreateTxt(&m_gui,SET_PROGRAM_TEMP_TEXT,E_PG4,(gslc_tsRect){190,110,24,10},
+  // Create E_ELEM_TEXT15 text label
+  pElemRef = gslc_ElemCreateTxt(&m_gui,E_ELEM_TEXT15,E_PG4,(gslc_tsRect){190,110,24,10},
     (char*)"Temp",0,E_FONT_TXT5);
   gslc_ElemSetTxtCol(&m_gui,pElemRef,GSLC_COL_BLACK);
   gslc_ElemSetCol(&m_gui,pElemRef,GSLC_COL_GRAY,GSLC_COL_WHITE,GSLC_COL_BLACK);
   
-  // create SAVE_BTN button with text label
-  pElemRef = gslc_ElemCreateBtnTxt(&m_gui,SAVE_BTN,E_PG4,
+  // create E_ELEM_BTN35 button with text label
+  pElemRef = gslc_ElemCreateBtnTxt(&m_gui,E_ELEM_BTN35,E_PG4,
+    (gslc_tsRect){180,50,50,40},(char*)"Up",0,E_FONT_TXT5,&CbBtnCommon);
+  
+  // create E_ELEM_BTN36 button with text label
+  pElemRef = gslc_ElemCreateBtnTxt(&m_gui,E_ELEM_BTN36,E_PG4,
+    (gslc_tsRect){180,135,50,40},(char*)"Down",0,E_FONT_TXT5,&CbBtnCommon);
+  
+  // create E_ELEM_BTN37 button with text label
+  pElemRef = gslc_ElemCreateBtnTxt(&m_gui,E_ELEM_BTN37,E_PG4,
     (gslc_tsRect){100,160,50,40},(char*)"Save",0,E_FONT_TXT5,&CbBtnCommon);
   
-  // create ENABLE_BTN button with text label
-  pElemRef = gslc_ElemCreateBtnTxt(&m_gui,ENABLE_BTN,E_PG4,
+  // create E_ELEM_BTN38 button with text label
+  pElemRef = gslc_ElemCreateBtnTxt(&m_gui,E_ELEM_BTN38,E_PG4,
     (gslc_tsRect){30,160,50,40},(char*)"Enable",0,E_FONT_TXT5,&CbBtnCommon);
   
   // Create E_ELEM_TEXT16 text label
-  pElemRef = gslc_ElemCreateTxt(&m_gui,E_ELEM_TEXT16,E_PG4,(gslc_tsRect){40,120,84,10},
+  pElemRef = gslc_ElemCreateTxt(&m_gui,E_ELEM_TEXT16,E_PG4,(gslc_tsRect){10,120,84,10},
     (char*)"Enabled Status",0,E_FONT_TXT5);
   gslc_ElemSetTxtCol(&m_gui,pElemRef,GSLC_COL_BLACK);
   gslc_ElemSetCol(&m_gui,pElemRef,GSLC_COL_GRAY,GSLC_COL_WHITE,GSLC_COL_BLACK);
@@ -637,31 +541,18 @@ bool InitGUI()
   gslc_ElemSetTxtCol(&m_gui,pElemRef,GSLC_COL_BLACK);
   gslc_ElemSetCol(&m_gui,pElemRef,GSLC_COL_GRAY,GSLC_COL_WHITE,GSLC_COL_BLACK);
   
-  // Create MONTH_UP button with image label
-  pElemRef = gslc_ElemCreateBtnImg(&m_gui,MONTH_UP,E_PG4,(gslc_tsRect){180,135,50,40},
-          gslc_GetImageFromProg((const unsigned char*)IMG_PIXILFRAME0,GSLC_IMGREF_FMT_BMP24),
-          gslc_GetImageFromProg((const unsigned char*)IMG_PIXILFRAME0_SEL,GSLC_IMGREF_FMT_BMP24),
-          &CbBtnCommon);
-  gslc_ElemSetFillEn(&m_gui,pElemRef,false);
+  // create E_ELEM_BTN40 button with text label
+  pElemRef = gslc_ElemCreateBtnTxt(&m_gui,E_ELEM_BTN40,E_PG4,
+    (gslc_tsRect){260,10,50,40},(char*)"Back",0,E_FONT_TXT5,&CbBtnCommon);
   
-  // Create DAY_UP button with image label
-  pElemRef = gslc_ElemCreateBtnImg(&m_gui,DAY_UP,E_PG4,(gslc_tsRect){180,50,50,40},
-          gslc_GetImageFromProg((const unsigned char*)IMG_PIXILFRAME0,GSLC_IMGREF_FMT_BMP24),
-          gslc_GetImageFromProg((const unsigned char*)IMG_PIXILFRAME0_SEL,GSLC_IMGREF_FMT_BMP24),
-          &CbBtnCommon);
-  gslc_ElemSetFillEn(&m_gui,pElemRef,false);
+  // create E_ELEM_BTN41 button with text label
+  pElemRef = gslc_ElemCreateBtnTxt(&m_gui,E_ELEM_BTN41,E_PG4,
+    (gslc_tsRect){260,190,50,40},(char*)"Home",0,E_FONT_TXT5,&CbBtnCommon);
   
-  // Create YEAR_UP button with image label
-  pElemRef = gslc_ElemCreateBtnImg(&m_gui,YEAR_UP,E_PG4,(gslc_tsRect){260,190,50,40},
-          gslc_GetImageFromProg((const unsigned char*)IMG_PIXILFRAME0,GSLC_IMGREF_FMT_BMP24),
-          gslc_GetImageFromProg((const unsigned char*)IMG_PIXILFRAME0_SEL,GSLC_IMGREF_FMT_BMP24),
-          &CbBtnCommon);
-  gslc_ElemSetFillEn(&m_gui,pElemRef,false);
-  
-  // Create HOUR_UP button with image label
-  pElemRef = gslc_ElemCreateBtnImg(&m_gui,HOUR_UP,E_PG4,(gslc_tsRect){260,10,50,40},
-          gslc_GetImageFromProg((const unsigned char*)IMG_PIXILFRAME0,GSLC_IMGREF_FMT_BMP24),
-          gslc_GetImageFromProg((const unsigned char*)IMG_PIXILFRAME0_SEL,GSLC_IMGREF_FMT_BMP24),
+  // Create IMAGE_BUTTON button with image label
+  pElemRef = gslc_ElemCreateBtnImg(&m_gui,IMAGE_BUTTON,E_PG4,(gslc_tsRect){40,50,32,32},
+          gslc_GetImageFromProg((const unsigned char*)IMG_EXIT_G24,GSLC_IMGREF_FMT_BMP24),
+          gslc_GetImageFromSD((const char*)IMG_EXIT_G24_SEL,GSLC_IMGREF_FMT_BMP24),
           &CbBtnCommon);
   gslc_ElemSetFillEn(&m_gui,pElemRef,false);
 //<InitGUI !End!>
@@ -695,6 +586,7 @@ void setup()
   InitGUI();
 
 //<Startup !Start!>
+  gslc_GuiRotate(&m_gui, 1);
 //<Startup !End!>
 
 }
