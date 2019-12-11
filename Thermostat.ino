@@ -319,23 +319,23 @@ bool InitGUI()
   
   // create HOLD_BTN button with text label
   pElemRef = gslc_ElemCreateBtnTxt(&m_gui,HOLD_BTN,E_PG_MAIN,
-    (gslc_tsRect){240,100,40,30},(char*)"Hold",0,E_FONT_TXT5,&CbBtnCommon);
+    (gslc_tsRect){240,90,50,40},(char*)"Hold",0,E_FONT_TXT5,&CbBtnCommon);
   
   // create HEAT_BTN button with text label
   pElemRef = gslc_ElemCreateBtnTxt(&m_gui,HEAT_BTN,E_PG_MAIN,
-    (gslc_tsRect){10,190,40,40},(char*)"Heat",0,E_FONT_TXT5,&CbBtnCommon);
+    (gslc_tsRect){10,190,50,40},(char*)"Heat",0,E_FONT_TXT5,&CbBtnCommon);
   
   // create AC_BTN button with text label
   pElemRef = gslc_ElemCreateBtnTxt(&m_gui,AC_BTN,E_PG_MAIN,
-    (gslc_tsRect){70,190,40,40},(char*)"AC",0,E_FONT_TXT5,&CbBtnCommon);
+    (gslc_tsRect){70,190,50,40},(char*)"AC",0,E_FONT_TXT5,&CbBtnCommon);
   
   // create AUTO_BTN button with text label
   pElemRef = gslc_ElemCreateBtnTxt(&m_gui,AUTO_BTN,E_PG_MAIN,
-    (gslc_tsRect){130,190,40,40},(char*)"Auto",0,E_FONT_TXT5,&CbBtnCommon);
+    (gslc_tsRect){130,190,50,40},(char*)"Auto",0,E_FONT_TXT5,&CbBtnCommon);
   
   // create OFF_BTN button with text label
   pElemRef = gslc_ElemCreateBtnTxt(&m_gui,OFF_BTN,E_PG_MAIN,
-    (gslc_tsRect){190,190,40,40},(char*)"Off",0,E_FONT_TXT5,&CbBtnCommon);
+    (gslc_tsRect){190,190,50,40},(char*)"Off",0,E_FONT_TXT5,&CbBtnCommon);
   
   // create UP_BNT button with text label
   pElemRef = gslc_ElemCreateBtnTxt(&m_gui,UP_BNT,E_PG_MAIN,
@@ -347,7 +347,7 @@ bool InitGUI()
   
   // create HOME_BUTTON_1 button with text label
   pElemRef = gslc_ElemCreateBtnTxt(&m_gui,HOME_BUTTON_1,E_PG2,
-    (gslc_tsRect){150,200,30,30},(char*)"Home",0,E_FONT_TXT5,&CbBtnCommon);
+    (gslc_tsRect){140,190,50,40},(char*)"Home",0,E_FONT_TXT5,&CbBtnCommon);
   
   // Create E_ELEM_TEXT7 text label
   pElemRef = gslc_ElemCreateTxt(&m_gui,E_ELEM_TEXT7,E_PG2,(gslc_tsRect){30,10,42,10},
@@ -414,80 +414,80 @@ bool InitGUI()
   gslc_ElemSetCol(&m_gui,pElemRef,GSLC_COL_GRAY,GSLC_COL_WHITE,GSLC_COL_BLACK);
   
   // Create E_ELEM_TEXT11 text label
-  pElemRef = gslc_ElemCreateTxt(&m_gui,E_ELEM_TEXT11,E_PG3,(gslc_tsRect){90,120,24,10},
+  pElemRef = gslc_ElemCreateTxt(&m_gui,E_ELEM_TEXT11,E_PG3,(gslc_tsRect){110,110,24,10},
     (char*)"2019",0,E_FONT_TXT5);
   gslc_ElemSetTxtCol(&m_gui,pElemRef,GSLC_COL_BLACK);
   gslc_ElemSetCol(&m_gui,pElemRef,GSLC_COL_GRAY,GSLC_COL_WHITE,GSLC_COL_BLACK);
   
   // create HOME_BUTTON_2 button with text label
   pElemRef = gslc_ElemCreateBtnTxt(&m_gui,HOME_BUTTON_2,E_PG3,
-    (gslc_tsRect){270,10,40,30},(char*)"Home",0,E_FONT_TXT5,&CbBtnCommon);
+    (gslc_tsRect){260,10,50,40},(char*)"Home",0,E_FONT_TXT5,&CbBtnCommon);
   
   // Create E_ELEM_TEXT12 text label
-  pElemRef = gslc_ElemCreateTxt(&m_gui,E_ELEM_TEXT12,E_PG3,(gslc_tsRect){200,120,6,10},
+  pElemRef = gslc_ElemCreateTxt(&m_gui,E_ELEM_TEXT12,E_PG3,(gslc_tsRect){180,110,6,10},
     (char*)"2",0,E_FONT_TXT5);
   gslc_ElemSetTxtCol(&m_gui,pElemRef,GSLC_COL_BLACK);
   gslc_ElemSetCol(&m_gui,pElemRef,GSLC_COL_GRAY,GSLC_COL_WHITE,GSLC_COL_BLACK);
   
   // Create E_ELEM_TEXT13 text label
-  pElemRef = gslc_ElemCreateTxt(&m_gui,E_ELEM_TEXT13,E_PG3,(gslc_tsRect){220,120,12,10},
+  pElemRef = gslc_ElemCreateTxt(&m_gui,E_ELEM_TEXT13,E_PG3,(gslc_tsRect){230,120,12,10},
     (char*)"58",0,E_FONT_TXT5);
   gslc_ElemSetTxtCol(&m_gui,pElemRef,GSLC_COL_BLACK);
   gslc_ElemSetCol(&m_gui,pElemRef,GSLC_COL_GRAY,GSLC_COL_WHITE,GSLC_COL_BLACK);
   
   // Create E_ELEM_TEXT14 text label
-  pElemRef = gslc_ElemCreateTxt(&m_gui,E_ELEM_TEXT14,E_PG3,(gslc_tsRect){250,120,12,10},
+  pElemRef = gslc_ElemCreateTxt(&m_gui,E_ELEM_TEXT14,E_PG3,(gslc_tsRect){280,120,12,10},
     (char*)"AM",0,E_FONT_TXT5);
   gslc_ElemSetTxtCol(&m_gui,pElemRef,GSLC_COL_BLACK);
   gslc_ElemSetCol(&m_gui,pElemRef,GSLC_COL_GRAY,GSLC_COL_WHITE,GSLC_COL_BLACK);
   
   // create E_ELEM_BTN22 button with text label
   pElemRef = gslc_ElemCreateBtnTxt(&m_gui,E_ELEM_BTN22,E_PG3,
-    (gslc_tsRect){180,140,30,30},(char*)"Down",0,E_FONT_TXT5,&CbBtnCommon);
+    (gslc_tsRect){160,140,50,40},(char*)"Down",0,E_FONT_TXT5,&CbBtnCommon);
   
   // create E_ELEM_BTN23 button with text label
   pElemRef = gslc_ElemCreateBtnTxt(&m_gui,E_ELEM_BTN23,E_PG3,
-    (gslc_tsRect){210,140,30,30},(char*)"Down",0,E_FONT_TXT5,&CbBtnCommon);
+    (gslc_tsRect){210,140,50,40},(char*)"Down",0,E_FONT_TXT5,&CbBtnCommon);
   
   // create E_ELEM_BTN24 button with text label
   pElemRef = gslc_ElemCreateBtnTxt(&m_gui,E_ELEM_BTN24,E_PG3,
-    (gslc_tsRect){240,140,30,30},(char*)"Down",0,E_FONT_TXT5,&CbBtnCommon);
+    (gslc_tsRect){260,140,50,40},(char*)"Down",0,E_FONT_TXT5,&CbBtnCommon);
   
   // create E_ELEM_BTN25 button with text label
   pElemRef = gslc_ElemCreateBtnTxt(&m_gui,E_ELEM_BTN25,E_PG3,
-    (gslc_tsRect){240,70,30,30},(char*)"Up",0,E_FONT_TXT5,&CbBtnCommon);
+    (gslc_tsRect){260,60,50,40},(char*)"Up",0,E_FONT_TXT5,&CbBtnCommon);
   
   // create E_ELEM_BTN26 button with text label
   pElemRef = gslc_ElemCreateBtnTxt(&m_gui,E_ELEM_BTN26,E_PG3,
-    (gslc_tsRect){210,70,30,30},(char*)"Up",0,E_FONT_TXT5,&CbBtnCommon);
+    (gslc_tsRect){210,60,50,40},(char*)"Up",0,E_FONT_TXT5,&CbBtnCommon);
   
   // create E_ELEM_BTN27 button with text label
   pElemRef = gslc_ElemCreateBtnTxt(&m_gui,E_ELEM_BTN27,E_PG3,
-    (gslc_tsRect){180,70,30,30},(char*)"Up",0,E_FONT_TXT5,&CbBtnCommon);
+    (gslc_tsRect){160,60,50,40},(char*)"Up",0,E_FONT_TXT5,&CbBtnCommon);
   
   // create E_ELEM_BTN28 button with text label
   pElemRef = gslc_ElemCreateBtnTxt(&m_gui,E_ELEM_BTN28,E_PG3,
-    (gslc_tsRect){10,70,30,30},(char*)"Up",0,E_FONT_TXT5,&CbBtnCommon);
+    (gslc_tsRect){10,60,50,40},(char*)"Up",0,E_FONT_TXT5,&CbBtnCommon);
   
   // create E_ELEM_BTN29 button with text label
   pElemRef = gslc_ElemCreateBtnTxt(&m_gui,E_ELEM_BTN29,E_PG3,
-    (gslc_tsRect){10,140,30,30},(char*)"Down",0,E_FONT_TXT5,&CbBtnCommon);
+    (gslc_tsRect){10,140,50,40},(char*)"Down",0,E_FONT_TXT5,&CbBtnCommon);
   
   // create E_ELEM_BTN30 button with text label
   pElemRef = gslc_ElemCreateBtnTxt(&m_gui,E_ELEM_BTN30,E_PG3,
-    (gslc_tsRect){50,140,30,30},(char*)"Down",0,E_FONT_TXT5,&CbBtnCommon);
+    (gslc_tsRect){60,140,50,40},(char*)"Down",0,E_FONT_TXT5,&CbBtnCommon);
   
   // create E_ELEM_BTN31 button with text label
   pElemRef = gslc_ElemCreateBtnTxt(&m_gui,E_ELEM_BTN31,E_PG3,
-    (gslc_tsRect){90,140,30,30},(char*)"Down",0,E_FONT_TXT5,&CbBtnCommon);
+    (gslc_tsRect){110,140,50,40},(char*)"Down",0,E_FONT_TXT5,&CbBtnCommon);
   
   // create E_ELEM_BTN32 button with text label
   pElemRef = gslc_ElemCreateBtnTxt(&m_gui,E_ELEM_BTN32,E_PG3,
-    (gslc_tsRect){50,70,30,30},(char*)"Up",0,E_FONT_TXT5,&CbBtnCommon);
+    (gslc_tsRect){60,60,50,40},(char*)"Up",0,E_FONT_TXT5,&CbBtnCommon);
   
   // create E_ELEM_BTN33 button with text label
   pElemRef = gslc_ElemCreateBtnTxt(&m_gui,E_ELEM_BTN33,E_PG3,
-    (gslc_tsRect){90,70,30,30},(char*)"Up",0,E_FONT_TXT5,&CbBtnCommon);
+    (gslc_tsRect){110,60,50,40},(char*)"Up",0,E_FONT_TXT5,&CbBtnCommon);
 
   // -----------------------------------
   // PAGE: E_PG4
@@ -501,19 +501,19 @@ bool InitGUI()
   
   // create E_ELEM_BTN35 button with text label
   pElemRef = gslc_ElemCreateBtnTxt(&m_gui,E_ELEM_BTN35,E_PG4,
-    (gslc_tsRect){180,65,30,30},(char*)"Up",0,E_FONT_TXT5,&CbBtnCommon);
+    (gslc_tsRect){180,65,50,40},(char*)"Up",0,E_FONT_TXT5,&CbBtnCommon);
   
   // create E_ELEM_BTN36 button with text label
   pElemRef = gslc_ElemCreateBtnTxt(&m_gui,E_ELEM_BTN36,E_PG4,
-    (gslc_tsRect){180,135,30,30},(char*)"Down",0,E_FONT_TXT5,&CbBtnCommon);
+    (gslc_tsRect){180,135,50,40},(char*)"Down",0,E_FONT_TXT5,&CbBtnCommon);
   
   // create E_ELEM_BTN37 button with text label
   pElemRef = gslc_ElemCreateBtnTxt(&m_gui,E_ELEM_BTN37,E_PG4,
-    (gslc_tsRect){150,180,40,30},(char*)"Save",0,E_FONT_TXT5,&CbBtnCommon);
+    (gslc_tsRect){150,190,50,40},(char*)"Save",0,E_FONT_TXT5,&CbBtnCommon);
   
   // create E_ELEM_BTN38 button with text label
   pElemRef = gslc_ElemCreateBtnTxt(&m_gui,E_ELEM_BTN38,E_PG4,
-    (gslc_tsRect){30,180,50,30},(char*)"Enable",0,E_FONT_TXT5,&CbBtnCommon);
+    (gslc_tsRect){30,180,50,40},(char*)"Enable",0,E_FONT_TXT5,&CbBtnCommon);
   
   // Create E_ELEM_TEXT16 text label
   pElemRef = gslc_ElemCreateTxt(&m_gui,E_ELEM_TEXT16,E_PG4,(gslc_tsRect){10,120,84,10},
@@ -529,11 +529,11 @@ bool InitGUI()
   
   // create E_ELEM_BTN40 button with text label
   pElemRef = gslc_ElemCreateBtnTxt(&m_gui,E_ELEM_BTN40,E_PG4,
-    (gslc_tsRect){280,10,30,30},(char*)"Back",0,E_FONT_TXT5,&CbBtnCommon);
+    (gslc_tsRect){260,10,50,40},(char*)"Back",0,E_FONT_TXT5,&CbBtnCommon);
   
   // create E_ELEM_BTN41 button with text label
   pElemRef = gslc_ElemCreateBtnTxt(&m_gui,E_ELEM_BTN41,E_PG4,
-    (gslc_tsRect){280,200,30,30},(char*)"Home",0,E_FONT_TXT5,&CbBtnCommon);
+    (gslc_tsRect){260,190,50,40},(char*)"Home",0,E_FONT_TXT5,&CbBtnCommon);
 //<InitGUI !End!>
 
   return true;
