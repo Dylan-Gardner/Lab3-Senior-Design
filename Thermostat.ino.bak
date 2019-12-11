@@ -108,6 +108,7 @@ gslc_tsElemRef                  m_asPage4ElemRef[MAX_ELEM_PG4];
 
 // Save some element references for direct access
 //<Save_References !Start!>
+gslc_tsElemRef*  m_pElemOutTxt1    = NULL;
 //<Save_References !End!>
 
 // Define debug message function
@@ -287,11 +288,13 @@ bool InitGUI()
   // PAGE: E_PG_MAIN
   
   
-  // Create SET_TEMP_TEXT text label
-  pElemRef = gslc_ElemCreateTxt(&m_gui,SET_TEMP_TEXT,E_PG_MAIN,(gslc_tsRect){148,110,24,10},
-    (char*)"Temp",0,E_FONT_TXT5);
+  // Create SET_TEMP_TEXT runtime modifiable text
+  static char m_sDisplayText1[11] = "Temp";
+  pElemRef = gslc_ElemCreateTxt(&m_gui,SET_TEMP_TEXT,E_PG_MAIN,(gslc_tsRect){140,110,54,10},
+    (char*)m_sDisplayText1,11,E_FONT_TXT5);
   gslc_ElemSetTxtCol(&m_gui,pElemRef,GSLC_COL_BLACK);
   gslc_ElemSetCol(&m_gui,pElemRef,GSLC_COL_BLACK,GSLC_COL_WHITE,GSLC_COL_BLACK);
+  m_pElemOutTxt1 = pElemRef;
   
   // Create CUR_TEMP_TEXT text label
   pElemRef = gslc_ElemCreateTxt(&m_gui,CUR_TEMP_TEXT,E_PG_MAIN,(gslc_tsRect){20,110,72,10},

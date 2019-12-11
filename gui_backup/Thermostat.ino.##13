@@ -22,11 +22,6 @@
 
 // Include any extended elements
 //<Includes !Start!>
-
-// Ensure optional features are enabled in the configuration
-#if !(GSLC_SD_EN)
-  #error "Config: GSLC_SD_EN required for this program but not enabled. Please update GUIslice/config/"
-#endif
 //<Includes !End!>
 
 // ------------------------------------------------
@@ -40,8 +35,6 @@
 // Defines for resources
 // ------------------------------------------------
 //<Resources !Start!>
-#define IMG_EXIT_G24              "/exit_g24.bmp"
-#define IMG_EXIT_G24_SEL          "/exit_g24.bmp"
 //<Resources !End!>
 
 // ------------------------------------------------
@@ -57,9 +50,9 @@ enum {AC_BTN,AUTO_BTN,CUR_TEMP_TEXT,DATE_TEXT,DOWN_BTN,E_DRAW_LINE1
       ,E_ELEM_TEXT11,E_ELEM_TEXT12,E_ELEM_TEXT13,E_ELEM_TEXT14
       ,E_ELEM_TEXT15,E_ELEM_TEXT16,E_ELEM_TEXT17,E_ELEM_TEXT7
       ,E_ELEM_TEXT8,E_ELEM_TEXT9,HEAT_BTN,HOLD_BTN,HOME_BUTTON_1
-      ,HOME_BUTTON_2,IMAGE_BUTTON,OFF_BTN,PRGM_BTN,SETTINGS_BTN
-      ,SET_TEMP_TEXT,UP_BNT,WKND_1_BTN,WKND_2_BTN,WKND_3_BTN,WKND_4_BTN
-      ,WK_1_BTN,WK_2_BTN,WK_3_BTN,WK_4_BTN};
+      ,HOME_BUTTON_2,OFF_BTN,PRGM_BTN,SETTINGS_BTN,SET_TEMP_TEXT,UP_BNT
+      ,WKND_1_BTN,WKND_2_BTN,WKND_3_BTN,WKND_4_BTN,WK_1_BTN,WK_2_BTN
+      ,WK_3_BTN,WK_4_BTN};
 // Must use separate enum for fonts with MAX_FONT at end to use gslc_FontSet.
 enum {E_FONT_TXT5,MAX_FONT};
 //<Enum !End!>
@@ -83,7 +76,7 @@ enum {E_FONT_TXT5,MAX_FONT};
 #define MAX_ELEM_PG3 19 // # Elems total on page
 #define MAX_ELEM_PG3_RAM MAX_ELEM_PG3 // # Elems in RAM
 
-#define MAX_ELEM_PG4 10 // # Elems total on page
+#define MAX_ELEM_PG4 9 // # Elems total on page
 #define MAX_ELEM_PG4_RAM MAX_ELEM_PG4 // # Elems in RAM
 //<ElementDefines !End!>
 
@@ -115,7 +108,6 @@ gslc_tsElemRef                  m_asPage4ElemRef[MAX_ELEM_PG4];
 
 // Save some element references for direct access
 //<Save_References !Start!>
-gslc_tsElemRef*  m_pElemOutTxt1    = NULL;
 //<Save_References !End!>
 
 // Define debug message function
@@ -249,10 +241,6 @@ bool CbBtnCommon(void* pvGui,void *pvElemRef,gslc_teTouch eTouch,int16_t nX,int1
       case E_ELEM_BTN41:
         //TODO- Replace with button handling code
         break;
-      case IMAGE_BUTTON:
-        //TODO- Check the code to see what else you may need to add
-        gslc_SetPageCur(&m_gui,E_PG_MAIN);
-        break;
 //<Button Enums !End!>
       default:
         break;
@@ -299,13 +287,11 @@ bool InitGUI()
   // PAGE: E_PG_MAIN
   
   
-  // Create SET_TEMP_TEXT runtime modifiable text
-  static char m_sDisplayText1[11] = "Temp";
-  pElemRef = gslc_ElemCreateTxt(&m_gui,SET_TEMP_TEXT,E_PG_MAIN,(gslc_tsRect){140,110,54,10},
-    (char*)m_sDisplayText1,11,E_FONT_TXT5);
+  // Create SET_TEMP_TEXT text label
+  pElemRef = gslc_ElemCreateTxt(&m_gui,SET_TEMP_TEXT,E_PG_MAIN,(gslc_tsRect){148,110,24,10},
+    (char*)"Temp",0,E_FONT_TXT5);
   gslc_ElemSetTxtCol(&m_gui,pElemRef,GSLC_COL_BLACK);
   gslc_ElemSetCol(&m_gui,pElemRef,GSLC_COL_BLACK,GSLC_COL_WHITE,GSLC_COL_BLACK);
-  m_pElemOutTxt1 = pElemRef;
   
   // Create CUR_TEMP_TEXT text label
   pElemRef = gslc_ElemCreateTxt(&m_gui,CUR_TEMP_TEXT,E_PG_MAIN,(gslc_tsRect){20,110,72,10},
@@ -337,19 +323,19 @@ bool InitGUI()
   
   // create HEAT_BTN button with text label
   pElemRef = gslc_ElemCreateBtnTxt(&m_gui,HEAT_BTN,E_PG_MAIN,
-    (gslc_tsRect){80,190,50,40},(char*)"Heat",0,E_FONT_TXT5,&CbBtnCommon);
+    (gslc_tsRect){10,190,50,40},(char*)"Heat",0,E_FONT_TXT5,&CbBtnCommon);
   
   // create AC_BTN button with text label
   pElemRef = gslc_ElemCreateBtnTxt(&m_gui,AC_BTN,E_PG_MAIN,
-    (gslc_tsRect){140,190,50,40},(char*)"AC",0,E_FONT_TXT5,&CbBtnCommon);
+    (gslc_tsRect){70,190,50,40},(char*)"AC",0,E_FONT_TXT5,&CbBtnCommon);
   
   // create AUTO_BTN button with text label
   pElemRef = gslc_ElemCreateBtnTxt(&m_gui,AUTO_BTN,E_PG_MAIN,
-    (gslc_tsRect){200,190,50,40},(char*)"Auto",0,E_FONT_TXT5,&CbBtnCommon);
+    (gslc_tsRect){130,190,50,40},(char*)"Auto",0,E_FONT_TXT5,&CbBtnCommon);
   
   // create OFF_BTN button with text label
   pElemRef = gslc_ElemCreateBtnTxt(&m_gui,OFF_BTN,E_PG_MAIN,
-    (gslc_tsRect){260,190,50,40},(char*)"Off",0,E_FONT_TXT5,&CbBtnCommon);
+    (gslc_tsRect){190,190,50,40},(char*)"Off",0,E_FONT_TXT5,&CbBtnCommon);
   
   // create UP_BNT button with text label
   pElemRef = gslc_ElemCreateBtnTxt(&m_gui,UP_BNT,E_PG_MAIN,
@@ -508,14 +494,14 @@ bool InitGUI()
   
   
   // Create E_ELEM_TEXT15 text label
-  pElemRef = gslc_ElemCreateTxt(&m_gui,E_ELEM_TEXT15,E_PG4,(gslc_tsRect){190,110,24,10},
+  pElemRef = gslc_ElemCreateTxt(&m_gui,E_ELEM_TEXT15,E_PG4,(gslc_tsRect){180,110,24,10},
     (char*)"Temp",0,E_FONT_TXT5);
   gslc_ElemSetTxtCol(&m_gui,pElemRef,GSLC_COL_BLACK);
   gslc_ElemSetCol(&m_gui,pElemRef,GSLC_COL_GRAY,GSLC_COL_WHITE,GSLC_COL_BLACK);
   
   // create E_ELEM_BTN35 button with text label
   pElemRef = gslc_ElemCreateBtnTxt(&m_gui,E_ELEM_BTN35,E_PG4,
-    (gslc_tsRect){180,50,50,40},(char*)"Up",0,E_FONT_TXT5,&CbBtnCommon);
+    (gslc_tsRect){180,65,50,40},(char*)"Up",0,E_FONT_TXT5,&CbBtnCommon);
   
   // create E_ELEM_BTN36 button with text label
   pElemRef = gslc_ElemCreateBtnTxt(&m_gui,E_ELEM_BTN36,E_PG4,
@@ -523,11 +509,11 @@ bool InitGUI()
   
   // create E_ELEM_BTN37 button with text label
   pElemRef = gslc_ElemCreateBtnTxt(&m_gui,E_ELEM_BTN37,E_PG4,
-    (gslc_tsRect){100,160,50,40},(char*)"Save",0,E_FONT_TXT5,&CbBtnCommon);
+    (gslc_tsRect){150,190,50,40},(char*)"Save",0,E_FONT_TXT5,&CbBtnCommon);
   
   // create E_ELEM_BTN38 button with text label
   pElemRef = gslc_ElemCreateBtnTxt(&m_gui,E_ELEM_BTN38,E_PG4,
-    (gslc_tsRect){30,160,50,40},(char*)"Enable",0,E_FONT_TXT5,&CbBtnCommon);
+    (gslc_tsRect){30,180,50,40},(char*)"Enable",0,E_FONT_TXT5,&CbBtnCommon);
   
   // Create E_ELEM_TEXT16 text label
   pElemRef = gslc_ElemCreateTxt(&m_gui,E_ELEM_TEXT16,E_PG4,(gslc_tsRect){10,120,84,10},
@@ -548,13 +534,6 @@ bool InitGUI()
   // create E_ELEM_BTN41 button with text label
   pElemRef = gslc_ElemCreateBtnTxt(&m_gui,E_ELEM_BTN41,E_PG4,
     (gslc_tsRect){260,190,50,40},(char*)"Home",0,E_FONT_TXT5,&CbBtnCommon);
-  
-  // Create IMAGE_BUTTON button with image label
-  pElemRef = gslc_ElemCreateBtnImg(&m_gui,IMAGE_BUTTON,E_PG4,(gslc_tsRect){40,50,32,32},
-          gslc_GetImageFromProg((const unsigned char*)IMG_EXIT_G24,GSLC_IMGREF_FMT_BMP24),
-          gslc_GetImageFromSD((const char*)IMG_EXIT_G24_SEL,GSLC_IMGREF_FMT_BMP24),
-          &CbBtnCommon);
-  gslc_ElemSetFillEn(&m_gui,pElemRef,false);
 //<InitGUI !End!>
 
   return true;
