@@ -19,6 +19,7 @@
 // ------------------------------------------------
 #include "GUIslice.h"
 #include "GUIslice_drv.h"
+#include "GUIslice_ex.h"
 #if (GSLC_USE_PROGMEM)
   #include <avr/pgmspace.h>
 #endif
@@ -891,6 +892,7 @@ int16_t hourAt = 3;
 int16_t minuteAt = 50;
 
 bool heatOn = false;
+bool acOn = false;
 
 
 
@@ -931,15 +933,48 @@ bool CbBtnCommon(void* pvGui,void *pvElemRef,gslc_teTouch eTouch,int16_t nX,int1
         break;
       case HEAT_BTN:
         //TODO- Replace with button handling code
+        if (heatOn == true)
+        {
+          heatOn = false;
+          Serial.println("heat off");
+        }
+        else if (heatOn == false)
+        {
+          heatOn = true;
+          //acOn = false;
+          Serial.println("heat On");
+          //Serial.println("Ac off");
+        }
         break;
       case AC_BTN:
         //TODO- Replace with button handling code
+        if (acOn == true)
+        {
+          acOn = false;
+          Serial.println("ac off");
+        }
+        else if (acOn == false)
+        {
+          //heatOn = false;
+          acOn = true;
+          //Serial.println("heat off");
+          Serial.println("Ac on");
+        }
         break;
       case AUTO_BTN:
         //TODO- Replace with button handling code
+          heatOn = true;
+          acOn = true;
+          Serial.println("heat On");
+          Serial.println("Ac on");
+   
         break;
       case OFF_BTN:
         //TODO- Replace with button handling code
+          heatOn = false;
+          acOn = false;
+          Serial.println("heat Off");
+          Serial.println("Ac off");
         break;
       case WK_1_BTN:
         //TODO- Replace with button handling code
