@@ -1,0 +1,25 @@
+On/Off Switch
+Blue LED for AC
+Red LED for heat
+
+PG 1
+display current temp next to text
+display current day of week and time
+HVAC status images
+heating/ac turns on if below/above a certain point
+Hold on vs hold off
+
+PG 2
+initialize with current date and time
+
+PG 3
+enable/disable set points
+only one can be enabled at once
+weekday and weekend are separate
+
+PG 4:
+icons 
+
+Extras:
+dimming scren
+hysteresis to avoid excessive on off
