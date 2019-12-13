@@ -24,6 +24,13 @@
   #include <avr/pgmspace.h>
 #endif
 
+#include <OneWire.h>
+#include <DallasTemperature.h>
+#include <SPI.h>  
+#include <Wire.h>
+#include "RTClib.h"
+#include <EEPROM.h>
+
 // Include any extended elements
 //<Includes !Start!>
 
@@ -128,7 +135,7 @@ gslc_tsElemRef                  m_asPage4ElemRef[MAX_ELEM_PG4];
 //<Save_References !Start!>
 gslc_tsElemRef*  m_pElemOutTempText    = NULL;
 gslc_tsElemRef*  m_pElemOutProgramText    = NULL;
-
+gslc_tsElemRef*  m_pElementCurTempText = NULL;
 
 gslc_tsElemRef*  m_pElemOutMonthText    = NULL;
 gslc_tsElemRef*  m_pElemOutDayText    = NULL;
@@ -138,7 +145,10 @@ gslc_tsElemRef*  m_pElemOutMinText    = NULL;
 
 gslc_tsElemRef*  m_pElemOutAMPMText    = NULL;
 
-gslc_tsElemRef*  m_pElemOutTxt4    = NULL;
+gslc_tsElemRef*  m_pElemOutDateText    = NULL;
+gslc_tsElemRef* programTitleText = NULL;
+gslc_tsElemRef* enabledStatus = NULL;
+gslc_tsElemRef* enabledButton = NULL;
 //<Save_References !End!>
 
 // Define debug message function
@@ -871,28 +881,46 @@ static int16_t DebugOut(char ch) { if (ch == (char)'\n') Serial.println(""); els
 // ------------------------------------------------
 // Variables
 // ------------------------------------------------
-int16_t changeTempTo = 60;
-int16_t programTempTo = 40;
+int8_t changeTempTo = 70;
+int8_t programTempTo = 65;
 
 
-bool isPM = false;
+volatile bool isPM = false;
 static char changeTxtArr[10] = "60";
-static char programTxtArr[10] = "50";
+static char programTxtArr[10] = "65";
 static char monthTxtArr[10] = "10";
 static char dayTxtArr[10] = "20";
 static char yearTxtArr[10] = "2019";
 static char hourTxtArr[10] = "5";
 static char minuteTxtArr[10] = "50";
+static char program[6] = "NONE";
 
 
-int16_t monthAt = 12;
-int16_t dayAt = 4;
-int16_t yearAt = 2019;
-int16_t hourAt = 3;
-int16_t minuteAt = 50;
+volatile int16_t monthAt = 12;
+volatile int16_t dayAt = 4;
+volatile int16_t yearAt = 2019;
+volatile int16_t hourAt = 3;
+volatile int16_t minuteAt = 50;
+char *am_pmAt = "AM";
 
 bool heatOn = false;
 bool acOn = false;
+bool hold = false;
+
+DateTime currentDate = NULL;
+
+RTC_DS1307 rtc;
+char daysOfTheWeek[7][12] = {"Sun", "Mon", "Tue", "Wed", "Th", "Fri", "Sat"};
+
+const int oneWireBus = 4;
+OneWire oneWire(oneWireBus);
+DallasTemperature sensors(&oneWire);
+volatile int updateDisplay = 0;
+volatile int requestTemp = 0;
+volatile float temperatureF = 0;
+volatile int displayDimCounter = 0;
+volatile int displayDim = 0;
+volatile int updateTempTime = 0;
 
 
 
@@ -904,6 +932,7 @@ bool CbBtnCommon(void* pvGui,void *pvElemRef,gslc_teTouch eTouch,int16_t nX,int1
 {
   gslc_tsElemRef* pElemRef = (gslc_tsElemRef*)(pvElemRef);
   gslc_tsElem* pElem = pElemRef->pElem;
+  displayDimCounter = 0;
 
   if ( eTouch == GSLC_TOUCH_UP_IN ) {
     // From the element's ID we can determine which button was pressed.
@@ -912,13 +941,15 @@ bool CbBtnCommon(void* pvGui,void *pvElemRef,gslc_teTouch eTouch,int16_t nX,int1
 
       case DOWN_BTN:
         changeTempTo--;
+        storeTempModeEEPROM();
         snprintf(changeTxtArr, MAX_STR, "%d", changeTempTo);
         gslc_ElemSetTxtStr(&m_gui,m_pElemOutTempText,(char *)changeTxtArr);
         break;
       case UP_BTN:
         changeTempTo++;
+        storeTempModeEEPROM();
         snprintf(changeTxtArr, MAX_STR, "%d", changeTempTo);
-        gslc_ElemSetTxtStr(&m_gui,m_pElemOutTempText,changeTxtArr);
+        gslc_ElemSetTxtStr(&m_gui,m_pElemOutTempText,(char *)changeTxtArr);
         break;
       case PRGM_BTN:
         //TODO- Check the code to see what else you may need to add
@@ -936,20 +967,24 @@ bool CbBtnCommon(void* pvGui,void *pvElemRef,gslc_teTouch eTouch,int16_t nX,int1
         if (heatOn == true)
         {
           heatOn = false;
+          digitalWrite(26, LOW);
           Serial.println("heat off");
         }
         else if (heatOn == false)
         {
           heatOn = true;
           //acOn = false;
+          digitalWrite(26, HIGH);
           Serial.println("heat On");
           //Serial.println("Ac off");
         }
+        storeTempModeEEPROM();
         break;
       case AC_BTN:
         //TODO- Replace with button handling code
         if (acOn == true)
         {
+          digitalWrite(24, LOW);
           acOn = false;
           Serial.println("ac off");
         }
@@ -957,55 +992,78 @@ bool CbBtnCommon(void* pvGui,void *pvElemRef,gslc_teTouch eTouch,int16_t nX,int1
         {
           //heatOn = false;
           acOn = true;
+          digitalWrite(24, HIGH);
           //Serial.println("heat off");
           Serial.println("Ac on");
         }
+        storeTempModeEEPROM();
         break;
       case AUTO_BTN:
         //TODO- Replace with button handling code
           heatOn = true;
           acOn = true;
+          digitalWrite(24, HIGH);
+          digitalWrite(26, HIGH);
           Serial.println("heat On");
           Serial.println("Ac on");
-   
+          storeTempModeEEPROM();
         break;
       case OFF_BTN:
         //TODO- Replace with button handling code
           heatOn = false;
           acOn = false;
+          digitalWrite(24, LOW);
+          digitalWrite(26, LOW);          
           Serial.println("heat Off");
           Serial.println("Ac off");
+          storeTempModeEEPROM();
         break;
       case WK_1_BTN:
         //TODO- Replace with button handling code
+        strncpy(program, "WK1", 6);
+        gslc_ElemSetTxtStr(&m_gui,programTitleText,program);
         gslc_SetPageCur(&m_gui,E_PG4);
         break;
       case WK_2_BTN:
         //TODO- Replace with button handling code
+        strncpy(program, "WK2", 6);
+        gslc_ElemSetTxtStr(&m_gui,programTitleText,program);
         gslc_SetPageCur(&m_gui,E_PG4);
         break;
       case WK_3_BTN:
         //TODO- Replace with button handling code
+        strncpy(program, "WK3", 6);
+        gslc_ElemSetTxtStr(&m_gui,programTitleText,program);
         gslc_SetPageCur(&m_gui,E_PG4);
         break;
       case WK_4_BTN:
         //TODO- Replace with button handling code
+        strncpy(program, "WK4", 6);
+        gslc_ElemSetTxtStr(&m_gui,programTitleText,program);
         gslc_SetPageCur(&m_gui,E_PG4);
         break;
       case WKND_1_BTN:
         //TODO- Replace with button handling code
+        strncpy(program, "WKND1", 6);
+        gslc_ElemSetTxtStr(&m_gui,programTitleText,program);
         gslc_SetPageCur(&m_gui,E_PG4);
         break;
       case WKND_2_BTN:
         //TODO- Replace with button handling code
+        strncpy(program, "WKND2", 6);
+        gslc_ElemSetTxtStr(&m_gui,programTitleText,program);
         gslc_SetPageCur(&m_gui,E_PG4);
         break;
       case WKND_3_BTN:
         //TODO- Replace with button handling code
+        strncpy(program, "WKND3", 6);
+        gslc_ElemSetTxtStr(&m_gui,programTitleText,program);
         gslc_SetPageCur(&m_gui,E_PG4);
         break;
       case WKND_4_BTN:
         //TODO- Replace with button handling code
+        strncpy(program, "WKND4", 6);
+        gslc_ElemSetTxtStr(&m_gui,programTitleText,program);
         gslc_SetPageCur(&m_gui,E_PG4);
         break;
       case HOME_BTN_1:
@@ -1017,9 +1075,9 @@ bool CbBtnCommon(void* pvGui,void *pvElemRef,gslc_teTouch eTouch,int16_t nX,int1
         {monthAt++;}
         else
         {monthAt = 1;}
-        snprintf(monthTxtArr, MAX_STR, "%d", monthAt);
+        sprintf(monthTxtArr, "%d", monthAt);
         //Serial.println(monthTxtArr);
-        gslc_ElemSetTxtStr(&m_gui,m_pElemOutMonthText,monthTxtArr);
+        gslc_ElemSetTxtStr(&m_gui,m_pElemOutMonthText,(char *)monthTxtArr);
         
         break;
       case E_ELEM_IBTN10:
@@ -1028,9 +1086,9 @@ bool CbBtnCommon(void* pvGui,void *pvElemRef,gslc_teTouch eTouch,int16_t nX,int1
         {dayAt++;}
         else
         {dayAt = 1;}
-        snprintf(dayTxtArr, MAX_STR, "%d", dayAt);
+        sprintf(dayTxtArr, "%d", dayAt);
         //Serial.println(dayTxtArr);
-        gslc_ElemSetTxtStr(&m_gui,m_pElemOutDayText,dayTxtArr);
+        gslc_ElemSetTxtStr(&m_gui,m_pElemOutDayText,(char *)dayTxtArr);
         
         break;
       case E_ELEM_IBTN11:
@@ -1039,9 +1097,9 @@ bool CbBtnCommon(void* pvGui,void *pvElemRef,gslc_teTouch eTouch,int16_t nX,int1
         {yearAt++;}
         else
         {yearAt = 2000;}
-        snprintf(yearTxtArr, MAX_STR, "%d", yearAt);
+        sprintf(yearTxtArr, "%d", yearAt);
         //Serial.println(yearTxtArr);
-        gslc_ElemSetTxtStr(&m_gui,m_pElemOutYearText,yearTxtArr);
+        gslc_ElemSetTxtStr(&m_gui,m_pElemOutYearText,(char *)yearTxtArr);
         
         break;
       case E_ELEM_IBTN12:
@@ -1050,9 +1108,9 @@ bool CbBtnCommon(void* pvGui,void *pvElemRef,gslc_teTouch eTouch,int16_t nX,int1
         {hourAt++;}
         else
         {hourAt = 1;}
-        snprintf(hourTxtArr, MAX_STR, "%d", hourAt);
+        sprintf(hourTxtArr, "%d", hourAt);
        // Serial.println(hourTxtArr);
-        gslc_ElemSetTxtStr(&m_gui,m_pElemOutHourText,hourTxtArr);
+        gslc_ElemSetTxtStr(&m_gui,m_pElemOutHourText,(char *)hourTxtArr);
         
         break;
       case MIN_UP:
@@ -1061,9 +1119,9 @@ bool CbBtnCommon(void* pvGui,void *pvElemRef,gslc_teTouch eTouch,int16_t nX,int1
         {minuteAt++;}
         else
         {minuteAt = 0;}
-        snprintf(minuteTxtArr, MAX_STR, "%d", minuteAt);
+        sprintf(minuteTxtArr, "%02d", minuteAt);
         //Serial.println(minuteTxtArr);
-        gslc_ElemSetTxtStr(&m_gui,m_pElemOutMinText,minuteTxtArr);
+        gslc_ElemSetTxtStr(&m_gui,m_pElemOutMinText,(char *)minuteTxtArr);
         
         break;
       case AM_PM_UP:
@@ -1082,6 +1140,11 @@ bool CbBtnCommon(void* pvGui,void *pvElemRef,gslc_teTouch eTouch,int16_t nX,int1
         break;
       case HOME_BTN_2:
         //TODO- Replace with button handling code
+        int hour = hourAt;
+        if (am_pmAt == "PM"){
+          hourAt = hourAt+12;
+        }
+        getSetDate();
         gslc_SetPageCur(&m_gui,E_PG_MAIN);
         break;
       case MONTH_DOWN:
@@ -1091,7 +1154,7 @@ bool CbBtnCommon(void* pvGui,void *pvElemRef,gslc_teTouch eTouch,int16_t nX,int1
         {monthAt = 12;}
         snprintf(monthTxtArr, MAX_STR, "%d", monthAt);
         //Serial.println(monthTxtArr);
-        gslc_ElemSetTxtStr(&m_gui,m_pElemOutMonthText,monthTxtArr);
+        gslc_ElemSetTxtStr(&m_gui,m_pElemOutMonthText,(char *)monthTxtArr);
         
         break;
       case DAY_DOWN:
@@ -1101,7 +1164,7 @@ bool CbBtnCommon(void* pvGui,void *pvElemRef,gslc_teTouch eTouch,int16_t nX,int1
         {dayAt = 31;}
         snprintf(dayTxtArr, MAX_STR, "%d", dayAt);
        // Serial.println(dayTxtArr);
-        gslc_ElemSetTxtStr(&m_gui,m_pElemOutDayText,dayTxtArr);
+        gslc_ElemSetTxtStr(&m_gui,m_pElemOutDayText,(char *)dayTxtArr);
         
         break;
       case YEAR_DOWN:
@@ -1111,7 +1174,7 @@ bool CbBtnCommon(void* pvGui,void *pvElemRef,gslc_teTouch eTouch,int16_t nX,int1
         {yearAt = 2100;}
         snprintf(yearTxtArr, MAX_STR, "%d", yearAt);
        // Serial.println(yearTxtArr);
-        gslc_ElemSetTxtStr(&m_gui,m_pElemOutYearText,yearTxtArr);
+        gslc_ElemSetTxtStr(&m_gui,m_pElemOutYearText,(char *)yearTxtArr);
         
         break;
       case HOUR_DOWN:
@@ -1121,7 +1184,7 @@ bool CbBtnCommon(void* pvGui,void *pvElemRef,gslc_teTouch eTouch,int16_t nX,int1
         {hourAt = 12;}
         snprintf(hourTxtArr, MAX_STR, "%d", hourAt);
         //Serial.println(hourTxtArr);
-        gslc_ElemSetTxtStr(&m_gui,m_pElemOutHourText,hourTxtArr);
+        gslc_ElemSetTxtStr(&m_gui,m_pElemOutHourText,(char *)hourTxtArr);
         
         break;
       case MIN_DOWN:
@@ -1129,9 +1192,9 @@ bool CbBtnCommon(void* pvGui,void *pvElemRef,gslc_teTouch eTouch,int16_t nX,int1
         {minuteAt--;}
         else
         {minuteAt = 59;}
-        snprintf(minuteTxtArr, MAX_STR, "%d", minuteAt);
+        snprintf(minuteTxtArr, MAX_STR, "%02d", minuteAt);
        // Serial.println(minuteTxtArr);
-        gslc_ElemSetTxtStr(&m_gui,m_pElemOutMinText,minuteTxtArr);
+        gslc_ElemSetTxtStr(&m_gui,m_pElemOutMinText,(char *)minuteTxtArr);
         
         break;
       case AM_PM_DOWN:
@@ -1156,14 +1219,27 @@ bool CbBtnCommon(void* pvGui,void *pvElemRef,gslc_teTouch eTouch,int16_t nX,int1
         //TODO- Replace with button handling code
         break;
       case MONTH_UP:
+        programTempTo--;
+        Serial.println("Down");
+        snprintf(programTxtArr, MAX_STR, "%d", programTempTo);
+        gslc_ElemSetTxtStr(&m_gui,m_pElemOutProgramText,(char *)programTxtArr);
+        Serial.println("Down");
         break;
       case DAY_UP:
+        programTempTo++;
+        Serial.println("Up");
+
+        snprintf(programTxtArr, MAX_STR, "%d", programTempTo);
+        gslc_ElemSetTxtStr(&m_gui,m_pElemOutProgramText,(char *)programTxtArr);
+        Serial.println("Up");
         break;
       case YEAR_UP:
         //TODO- Replace with button handling code
-        gslc_SetPageCur(&m_gui,E_PG3);
+        Serial.println("Back");
+        gslc_SetPageCur(&m_gui,E_PG2);
         break;
       case HOUR_UP:
+        Serial.println("Home");
         //TODO- Replace with button handling code
         gslc_SetPageCur(&m_gui,E_PG_MAIN);
         break;
@@ -1216,27 +1292,34 @@ bool InitGUI()
   
   
   // Create SET_TEMP_TEXT runtime modifiable text
- static char m_sDisplayText1[10] = "tmp";
+  sprintf(changeTxtArr,"%d", changeTempTo);
   pElemRef = gslc_ElemCreateTxt(&m_gui,SET_TEMP_TEXT,E_PG_MAIN,(gslc_tsRect){130,110,48,10},
-   m_sDisplayText1,strlen(m_sDisplayText1),E_FONT_TXT5);
+   (char *)changeTxtArr,strlen(changeTxtArr),E_FONT_TXT5);
   gslc_ElemSetTxtAlign(&m_gui,pElemRef,GSLC_ALIGN_MID_MID);
   gslc_ElemSetTxtCol(&m_gui,pElemRef,GSLC_COL_WHITE);
   gslc_ElemSetCol(&m_gui,pElemRef,GSLC_COL_BLACK,GSLC_COL_BLACK,GSLC_COL_BLACK);
   m_pElemOutTempText = pElemRef;
   
   // Create CUR_TEMP_TEXT text label
+  char currentTemp[10] = "";
+  char currentTempString[10] = "";
+  dtostrf(temperatureF,2,0, currentTemp);
+  sprintf(currentTempString,"%s F", currentTemp);
+
   pElemRef = gslc_ElemCreateTxt(&m_gui,CUR_TEMP_TEXT,E_PG_MAIN,(gslc_tsRect){20,110,72,10},
-    (char*)"Current Temp",0,E_FONT_TXT5);
+    (char*)currentTempString,10,E_FONT_TXT5);
   gslc_ElemSetTxtCol(&m_gui,pElemRef,GSLC_COL_WHITE);
   gslc_ElemSetCol(&m_gui,pElemRef,GSLC_COL_GRAY_DK3,GSLC_COL_BLACK,GSLC_COL_BLACK);
+  m_pElementCurTempText = pElemRef;
   
   // Create DATE_TEXT runtime modifiable text
-  static char m_sDisplayTextDate[11] = "Date";
+  char m_sDisplayTextDate[12] = "";
+  sprintf(m_sDisplayTextDate, "%s %d:%02d",daysOfTheWeek[currentDate.dayOfTheWeek()], hourAt, minuteAt);
   pElemRef = gslc_ElemCreateTxt(&m_gui,DATE_TEXT,E_PG_MAIN,(gslc_tsRect){10,25,54,10},
-    (char*)m_sDisplayTextDate,11,E_FONT_TXT5);
+    (char*)m_sDisplayTextDate,12,E_FONT_TXT5);
   gslc_ElemSetTxtCol(&m_gui,pElemRef,GSLC_COL_WHITE);
   gslc_ElemSetCol(&m_gui,pElemRef,GSLC_COL_GRAY,GSLC_COL_BLACK,GSLC_COL_BLACK);
-  m_pElemOutTxt4 = pElemRef;
+  m_pElemOutDateText = pElemRef;
   
   // create PRGM_BTN button with text label
   pElemRef = gslc_ElemCreateBtnTxt(&m_gui,PRGM_BTN,E_PG_MAIN,
@@ -1345,7 +1428,7 @@ bool InitGUI()
   // create WK_2_BTN button with text label
   pElemRef = gslc_ElemCreateBtnTxt(&m_gui,WK_2_BTN,E_PG2,
     (gslc_tsRect){10,70,80,30},(char*)"Program 2",0,E_FONT_TXT5,&CbBtnCommon);
-  
+  ​
   // create WK_3_BTN button with text label
   pElemRef = gslc_ElemCreateBtnTxt(&m_gui,WK_3_BTN,E_PG2,
     (gslc_tsRect){10,110,80,30},(char*)"Program 3",0,E_FONT_TXT5,&CbBtnCommon);
@@ -1421,55 +1504,45 @@ bool InitGUI()
   */
   // -----------------------------------
   // PAGE: E_PG3
-
-   static char m_sDisplayText2[10] = "temp2";
-   static char m_sDisplayText3[10] = "temp3";
-   static char m_sDisplayText4[10] = "temp4";
-   static char m_sDisplayText5[10] = "temp5";
-   static char m_sDisplayText6[10] = "temp6";
-   static char m_sDisplayText7[10] = "temp7";
-   static char m_sDisplayText8[10] = "temp8";
-
-  
   
   // Create MONTH_TEXT text label
   pElemRef = gslc_ElemCreateTxt(&m_gui,MONTH_TEXT,E_PG3,(gslc_tsRect){30,120,12,10},
-    m_sDisplayText2,strlen(m_sDisplayText2),E_FONT_TXT5);
+    monthTxtArr,strlen(monthTxtArr),E_FONT_TXT5);
   gslc_ElemSetTxtCol(&m_gui,pElemRef,GSLC_COL_WHITE);
   gslc_ElemSetCol(&m_gui,pElemRef,GSLC_COL_GRAY,GSLC_COL_BLACK,GSLC_COL_BLACK);
   m_pElemOutMonthText = pElemRef;
   
   // Create DAY_TEXT text label
   pElemRef = gslc_ElemCreateTxt(&m_gui,DAY_TEXT,E_PG3,(gslc_tsRect){80,120,12,10},
-    m_sDisplayText3,strlen(m_sDisplayText3),E_FONT_TXT5);
+    dayTxtArr,strlen(dayTxtArr),E_FONT_TXT5);
   gslc_ElemSetTxtCol(&m_gui,pElemRef,GSLC_COL_WHITE);
   gslc_ElemSetCol(&m_gui,pElemRef,GSLC_COL_GRAY,GSLC_COL_BLACK,GSLC_COL_BLACK);
   m_pElemOutDayText = pElemRef;
   
   // Create YEAR_TEXT text label
   pElemRef = gslc_ElemCreateTxt(&m_gui,YEAR_TEXT,E_PG3,(gslc_tsRect){120,120,24,10},
-    m_sDisplayText4,strlen(m_sDisplayText4),E_FONT_TXT5);
+    yearTxtArr,strlen(yearTxtArr),E_FONT_TXT5);
   gslc_ElemSetTxtCol(&m_gui,pElemRef,GSLC_COL_WHITE);
   gslc_ElemSetCol(&m_gui,pElemRef,GSLC_COL_GRAY,GSLC_COL_BLACK,GSLC_COL_BLACK);
   m_pElemOutYearText = pElemRef;
   
   // Create HOUR_TEXT text label
   pElemRef = gslc_ElemCreateTxt(&m_gui,HOUR_TEXT,E_PG3,(gslc_tsRect){180,120,6,10},
-    m_sDisplayText5,strlen(m_sDisplayText5),E_FONT_TXT5);
+    hourTxtArr,strlen(hourTxtArr),E_FONT_TXT5);
   gslc_ElemSetTxtCol(&m_gui,pElemRef,GSLC_COL_WHITE);
   gslc_ElemSetCol(&m_gui,pElemRef,GSLC_COL_GRAY,GSLC_COL_BLACK,GSLC_COL_BLACK);
   m_pElemOutHourText = pElemRef;
   
   // Create MIN_TEXT text label
   pElemRef = gslc_ElemCreateTxt(&m_gui,MIN_TEXT,E_PG3,(gslc_tsRect){230,120,12,10},
-    m_sDisplayText6,strlen(m_sDisplayText6),E_FONT_TXT5);
+    minuteTxtArr,strlen(minuteTxtArr),E_FONT_TXT5);
   gslc_ElemSetTxtCol(&m_gui,pElemRef,GSLC_COL_WHITE);
   gslc_ElemSetCol(&m_gui,pElemRef,GSLC_COL_GRAY,GSLC_COL_BLACK,GSLC_COL_BLACK);
   m_pElemOutMinText = pElemRef;
   
   // Create AM_PM_TEXT text label
   pElemRef = gslc_ElemCreateTxt(&m_gui,AM_PM_TEXT,E_PG3,(gslc_tsRect){280,120,12,10},
-    m_sDisplayText7,strlen(m_sDisplayText7),E_FONT_TXT5);
+    am_pmAt,strlen(am_pmAt),E_FONT_TXT5);
   gslc_ElemSetTxtCol(&m_gui,pElemRef,GSLC_COL_WHITE);
   gslc_ElemSetCol(&m_gui,pElemRef,GSLC_COL_GRAY,GSLC_COL_BLACK,GSLC_COL_BLACK);
   m_pElemOutAMPMText = pElemRef;
@@ -1572,7 +1645,7 @@ bool InitGUI()
   
   // Create SET_PROGRAM_TEMP_TEXT text label
      static char m_sDisplayTextprog[10] = "tmp";
-  
+      sprintf(m_sDisplayTextprog, "%s", program);
   pElemRef = gslc_ElemCreateTxt(&m_gui,SET_PROGRAM_TEMP_TEXT,E_PG4,(gslc_tsRect){190,110,24,10},
      m_sDisplayTextprog,strlen(m_sDisplayTextprog),E_FONT_TXT5);
   gslc_ElemSetTxtCol(&m_gui,pElemRef,GSLC_COL_WHITE);
@@ -1586,18 +1659,21 @@ bool InitGUI()
   // create ENABLE_BTN button with text label
   pElemRef = gslc_ElemCreateBtnTxt(&m_gui,ENABLE_BTN,E_PG4,
     (gslc_tsRect){30,160,50,40},(char*)"Enable",0,E_FONT_TXT5,&CbBtnCommon);
+    enabledButton = pElemRef;
   
   // Create E_ELEM_TEXT16 text label
   pElemRef = gslc_ElemCreateTxt(&m_gui,E_ELEM_TEXT16,E_PG4,(gslc_tsRect){40,120,84,10},
     (char*)"Enabled Status",0,E_FONT_TXT5);
   gslc_ElemSetTxtCol(&m_gui,pElemRef,GSLC_COL_WHITE);
   gslc_ElemSetCol(&m_gui,pElemRef,GSLC_COL_GRAY,GSLC_COL_BLACK,GSLC_COL_BLACK);
+  enabledStatus = pElemRef;
   
   // Create E_ELEM_TEXT17 text label
   pElemRef = gslc_ElemCreateTxt(&m_gui,E_ELEM_TEXT17,E_PG4,(gslc_tsRect){130,10,78,10},
-    (char*)"Program Title",0,E_FONT_TXT5);
+    (char*)program,strlen(program),E_FONT_TXT5);
   gslc_ElemSetTxtCol(&m_gui,pElemRef,GSLC_COL_WHITE);
   gslc_ElemSetCol(&m_gui,pElemRef,GSLC_COL_GRAY,GSLC_COL_BLACK,GSLC_COL_BLACK);
+  programTitleText = pElemRef;
   
   // Create MONTH_UP button with image label
   pElemRef = gslc_ElemCreateBtnImg(&m_gui,MONTH_UP,E_PG4,(gslc_tsRect){180,135,50,40},
@@ -1638,9 +1714,26 @@ void setup()
   // ------------------------------------------------
   // Initialize
   // ------------------------------------------------
+  noInterrupts();
+  TCCR1A = 0;
+  TCCR1B = 0;
+  TCNT1 = 0;
+  OCR1A = 15625;
+  TCCR1B |= (1<<WGM12);
+  TCCR1B |= (1<<CS12)|(1<<CS10);
+  TIMSK1 |= (1<<OCIE1A);
+  interrupts();
+
+  // put your setup code here, to run once:
+  sensors.begin();
+  sensors.setWaitForConversion(false);
+  sensors.setResolution(8);
+  sensors.requestTemperatures();
   Serial.begin(9600);
   // Wait for USB Serial 
   delay(1000);  // NOTE: Some devices require a delay after Serial.begin() before serial port can be used
+  temperatureF = sensors.getTempFByIndex(0);
+  sensors.requestTemperatures();
 
   gslc_InitDebug(&DebugOut);
 
@@ -1653,6 +1746,25 @@ void setup()
     if (!gslc_FontSet(&m_gui,E_FONT_TXT5,GSLC_FONTREF_PTR,NULL,1)) { return; }
 //<Load_Fonts !End!>
 
+  if (! rtc.begin()) {
+    Serial.println("Couldn't find RTC");
+    while (1);
+  }
+  if (! rtc.isrunning()) {
+    Serial.println("RTC is NOT running!");
+  }
+  
+
+  getSetDate();
+  pinMode(24, OUTPUT);
+  pinMode(26, OUTPUT);
+  getTempModeEEPROM();
+  if(heatOn){
+    digitalWrite(26, HIGH);
+  }
+  if(acOn){
+    digitalWrite(24, HIGH);
+  }
   // ------------------------------------------------
   // Create graphic elements
   // ------------------------------------------------
@@ -1663,11 +1775,65 @@ void setup()
 
 }
 
+ISR(TIMER1_COMPA_vect) {
+    requestTemp = 1;
+    updateTempTime++;
+    if(displayDimCounter > 30){
+      displayDim = 1;
+    }
+    else {
+      displayDimCounter++;
+    }
+}
+
 // -----------------------------------
 // Main event loop
 // -----------------------------------
 void loop()
 {
+  if (requestTemp) {
+    temperatureF = sensors.getTempFByIndex(0);
+    sensors.requestTemperatures();
+    requestTemp = 0;
+    Serial.println(temperatureF);
+    /*DateTime now = rtc.now();
+    Serial.print(now.year(), DEC);
+    Serial.print('/');
+    Serial.print(now.month(), DEC);
+    Serial.print('/');
+    Serial.print(now.day(), DEC);
+    Serial.print(" (");
+    Serial.print(daysOfTheWeek[now.dayOfTheWeek()]);
+    Serial.print(") ");
+    Serial.print(now.hour(), DEC);
+    Serial.print(':');
+    Serial.print(now.minute(), DEC);
+    Serial.print(':');
+    Serial.print(now.second(), DEC);
+    Serial.println();*/
+  }
+
+  if(displayDim){
+    Serial.println("Display Dimmed");
+    displayDim = 0;
+    displayDimCounter = 0;
+    
+  }
+
+  if(updateTempTime >= 30) {
+    updateTempTime = 0;
+    char currentTemp[10] = "";
+    char currentTempString[10] = "";
+    dtostrf(temperatureF,2,0, currentTemp);
+    sprintf(currentTempString,"%s F", currentTemp);
+    gslc_ElemSetTxtStr(&m_gui,m_pElementCurTempText,currentTempString);
+
+    getSetDate();
+    char m_sDisplayTextDate[12] = "";
+    sprintf(m_sDisplayTextDate, "%s %d:%02d",daysOfTheWeek[currentDate.dayOfTheWeek()], hourAt, minuteAt);
+    gslc_ElemSetTxtStr(&m_gui,m_pElemOutDateText,m_sDisplayTextDate);
+    Serial.println("updating screen");
+  }
 
   // ------------------------------------------------
   // Update GUI Elements
@@ -1679,6 +1845,50 @@ void loop()
   // ------------------------------------------------
   // Periodically call GUIslice update function
   // ------------------------------------------------
-gslc_Update(&m_gui);
+  gslc_Update(&m_gui);
     
+}
+
+void getSetDate(){
+  currentDate = rtc.now();
+  char *am_pm = "AM";
+  int hr_24, hr_12;
+  hr_24=currentDate.hour();
+
+  if (hr_24==0) hr_12=12;
+  else hr_12=hr_24%12;
+
+  if (hr_24<12) am_pm = "AM";
+  else am_pm = "PM";
+  monthAt = currentDate.month();
+  dayAt = currentDate.day();
+  yearAt = currentDate.year();
+  hourAt = hr_12;
+  minuteAt = currentDate.minute();
+  am_pmAt = am_pm;
+  sprintf(monthTxtArr, "%d",currentDate.month());
+  sprintf(dayTxtArr, "%d",currentDate.day());
+  sprintf(yearTxtArr, "%d",currentDate.year());
+  sprintf(hourTxtArr, "%d",hr_12);
+  sprintf(minuteTxtArr, "%02d",currentDate.minute());
+}
+
+void storeTempModeEEPROM(){
+  EEPROM.write(0, changeTempTo);
+  EEPROM.write(1, heatOn ? 1 : 0);
+  EEPROM.write(2, acOn ? 1 : 0);
+}
+
+void getTempModeEEPROM(){
+  changeTempTo = EEPROM.read(0);
+  heatOn = EEPROM.read(1) ? true : false;
+  acOn = EEPROM.read(2) ? true : false;
+}
+
+void storeProgramsEEPROM(){
+
+}
+
+void getProgramsEEPROM(){
+
 }
